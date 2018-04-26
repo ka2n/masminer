@@ -1,0 +1,101 @@
+{
+"summary": {
+"elapsed":"117380",
+"ghs5s":"232.25",
+"ghsav":"234.15",
+"foundblocks":"0",
+"getworks":"792",
+"accepted":"416.0000",
+"rejected":"416.0000",
+"hw":"0",
+"utility":"6.37",
+"discarded":"60001",
+"stale":"0",
+"localwork":"63171",
+"wu":"13800721.18",
+"diffa":"26126319609.91699219",
+"diffr":"872415231.79687500",
+"diffs":"0.00000000",
+"bestshare":"4"
+},
+"pools": [
+{
+"index":"0",
+"url":"stratum+tcp://stratum-xmc.antpool.com:5555",
+"user":"user",
+"status":"Alive",
+"priority":"0",
+"getworks":"792",
+"accepted":"12458",
+"rejected":"416",
+"discarded":"60001",
+"stale":"0",
+"diff":"2.097M",
+"diff1":"0",
+"diffa":"26126319609.91699219",
+"diffr":"872415231.79687500",
+"diffs":"0.00000000",
+"lsdiff":"2097151.99951172",
+"lstime":"0:00:06"
+}
+,
+{
+"index":"1",
+"url":"stratum+tcp://stratum-xmc.antpool.com:443%09",
+"user":"user",
+"status":"Dead",
+"priority":"1",
+"getworks":"0",
+"accepted":"0",
+"rejected":"0",
+"discarded":"0",
+"stale":"0",
+"diff":"0.000",
+"diff1":"0",
+"diffa":"0.00000000",
+"diffr":"0.00000000",
+"diffs":"0.00000000",
+"lsdiff":"0.00000000",
+"lstime":"0"
+}
+,
+{
+"index":"2",
+"url":"stratum+tcp://stratum-xmc.antpool.com:25%09",
+"user":"user",
+"status":"Dead",
+"priority":"2",
+"getworks":"0",
+"accepted":"0",
+"rejected":"0",
+"discarded":"0",
+"stale":"0",
+"diff":"0.000",
+"diff1":"0",
+"diffa":"0.00000000",
+"diffr":"0.00000000",
+"diffs":"0.00000000",
+"lsdiff":"0.00000000",
+"lstime":"0"
+}
+],
+"devs": [
+{
+"index":"2",
+"chain_acn":"60",
+"freq":"400,fan_num=1,fan1=4020,fan2=0,temp_num=3,temp1=0,temp2=51,temp3=52,temp4=51,temp2_1=0,temp2_2=57,temp2_3=59,temp2_4=58,temp_max=53,Device Hardware%=0.0000,no_matching_work=0,chain_acn1=0,chain_acn2=60,chain_acn3=60,chain_acn4=60,chain_acs1=,chain_acs2= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_acs3= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_acs4= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_hw1=0,chain_hw2=0,chain_hw3=0,chain_hw4=0,chain_rate1=,chain_rate2=78.86,chain_rate3=78.95,chain_rate4=74.44|",
+"fan":"0,temp_num=3,temp1=0,temp2=51,temp3=52,temp4=51,temp2_1=0,temp2_2=57,temp2_3=59,temp2_4=58,temp_max=53,Device Hardware%=0.0000,no_matching_work=0,chain_acn1=0,chain_acn2=60,chain_acn3=60,chain_acn4=60,chain_acs1=,chain_acs2= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_acs3= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_acs4= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_hw1=0,chain_hw2=0,chain_hw3=0,chain_hw4=0,chain_rate1=,chain_rate2=78.86,chain_rate3=78.95,chain_rate4=74.44|",
+"temp":"51",
+"chain_acs":" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo"
+}
+,
+{
+"index":"3",
+"chain_acn":"60",
+"freq":"400,fan_num=1,fan1=4020,fan2=0,temp_num=3,temp1=0,temp2=51,temp3=52,temp4=51,temp2_1=0,temp2_2=57,temp2_3=59,temp2_4=58,temp_max=53,Device Hardware%=0.0000,no_matching_work=0,chain_acn1=0,chain_acn2=60,chain_acn3=60,chain_acn4=60,chain_acs1=,chain_acs2= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_acs3= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_acs4= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_hw1=0,chain_hw2=0,chain_hw3=0,chain_hw4=0,chain_rate1=,chain_rate2=78.86,chain_rate3=78.95,chain_rate4=74.44|",
+"fan":"STATUS=S,When=1524764149,Code=70,Msg=CGMiner stats,Description=cgminer 4.9.0|CGMiner=4.9.0,Miner=1.3.0.10,CompileTime=Wed Apr 11 23:42:20 CST 2018,Type=Antminer X3|STATS=0,ID=X30,Elapsed=117380,Calls=0,Wait=0.000000,Max=0.000000,Min=99999999.000000,GHS 5s=232.25,GHS av=234.15,miner_count=3,frequency=400,fan_num=1,fan1=4020,fan2=0,temp_num=3,temp1=0,temp2=51,temp3=52,temp4=51,temp2_1=0,temp2_2=57,temp2_3=59,temp2_4=58,temp_max=53,Device Hardware%=0.0000,no_matching_work=0,chain_acn1=0,chain_acn2=60,chain_acn3=60,chain_acn4=60,chain_acs1=,chain_acs2= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_acs3= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_acs4= oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo,chain_hw1=0,chain_hw2=0,chain_hw3=0,chain_hw4=0,chain_rate1=,chain_rate2=78.86,chain_rate3=78.95,chain_rate4=74.44|",
+"temp":"52",
+"chain_acs":" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo"
+}
+]
+}

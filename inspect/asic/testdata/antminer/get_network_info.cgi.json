@@ -1,0 +1,13 @@
+{
+"nettype":"DHCP",
+"netdevice":"eth0",
+"macaddr":"64:CF:D9:F0:F0:F0",
+"ipaddress":"192.168.10.5",
+"netmask":"255.255.255.0",
+"conf_nettype":"DHCP",
+"conf_hostname":"antMiner",
+"conf_ipaddress":"",
+"conf_netmask":"",
+"conf_gateway":"",
+"conf_dnsservers":""
+}
