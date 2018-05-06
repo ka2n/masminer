@@ -1,0 +1,44 @@
+{
+  "STATUS": [
+    {
+      "STATUS": "S",
+      "When": 1525348382,
+      "Code": 11,
+      "Msg": "Summary",
+      "Description": "sgminer 5.6.6-l"
+    }
+  ],
+  "SUMMARY": [
+    {
+      "Elapsed": 682,
+      "MHS av": 10214.3717,
+      "MHS 5s": 10118.2721,
+      "KHS av": 10214372,
+      "KHS 5s": 10118272,
+      "Found Blocks": 0,
+      "Getworks": 57,
+      "Accepted": 7648,
+      "Rejected": 6,
+      "Hardware Errors": 0,
+      "Utility": 672.9086,
+      "Discarded": 425,
+      "Stale": 110,
+      "Get Failures": 0,
+      "Local Work": 2709,
+      "Remote Failures": 0,
+      "Network Blocks": 40,
+      "Total MH": 6965538.2016,
+      "Work Utility": 24891.5665,
+      "Difficulty Accepted": 269176.60000003,
+      "Difficulty Rejected": 256.0,
+      "Difficulty Stale": 3234.6,
+      "Best Share": 180385.290476,
+      "Device Hardware%": 0.0,
+      "Device Rejected%": 0.0905,
+      "Pool Rejected%": 0.0939,
+      "Pool Stale%": 1.1863,
+      "Last getwork": 1525348381
+    }
+  ],
+  "id": 1
+}

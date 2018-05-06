@@ -2,10 +2,10 @@ package cgminerproxy
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net"
-	"strings"
 	"time"
 )
 
@@ -33,13 +33,17 @@ func New(hostname string, port int) *CGMinerProxy {
 }
 
 // RunCommand calls RPC command
-func (proxy *CGMinerProxy) RunCommand(command, argument string) (string, error) {
+func (proxy *CGMinerProxy) RunCommand(command, argument string) ([]byte, error) {
 	conn, err := net.DialTimeout("tcp", proxy.HostPort, proxy.Timeout)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer conn.Close()
+	return proxy.RunCommandConn(conn, command, argument)
+}
 
+// RunCommandConn calls RPC command on existing net.Conn
+func (proxy *CGMinerProxy) RunCommandConn(conn net.Conn, command, argument string) ([]byte, error) {
 	type Req struct {
 		Command   string `json:"command"`
 		Parameter string `json:"parameter,omitempty"`
@@ -48,13 +52,14 @@ func (proxy *CGMinerProxy) RunCommand(command, argument string) (string, error) 
 	req := Req{Command: command, Parameter: argument}
 	reqb, err := json.Marshal(req)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	fmt.Fprintf(conn, "%s", reqb)
-	resp, err := bufio.NewReader(conn).ReadString('\x00')
+
+	resp, err := bufio.NewReader(conn).ReadBytes('\x00')
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return strings.TrimRight(resp, "\x00"), nil
+	return bytes.TrimRight(resp, "\x00"), nil
 }

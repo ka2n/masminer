@@ -1,0 +1,65 @@
+{
+  "STATUS": [
+    {
+      "STATUS": "S",
+      "When": 1525348382,
+      "Code": 70,
+      "Msg": "sgminer stats",
+      "Description": "sgminer 5.6.6-l"
+    }
+  ],
+  "STATS": [
+    {
+      "STATS": 0,
+      "ID": "BKLU0",
+      "Elapsed": 682,
+      "Calls": 0,
+      "Wait": 0.0,
+      "Max": 0.0,
+      "Min": 99999999.0,
+      "Chip Count": 64,
+      "Clock": 300,
+      "HWV": 29297,
+      "FWV": 7500055,
+      "Algo": "Qubit",
+      "USB Pipe": "0",
+      "USB Delay": "r0 0.000000 w0 0.000000",
+      "USB tmo": "316103 0"
+    },
+    {
+      "STATS": 1,
+      "ID": "BKLU1",
+      "Elapsed": 682,
+      "Calls": 0,
+      "Wait": 0.0,
+      "Max": 0.0,
+      "Min": 99999999.0,
+      "Chip Count": 64,
+      "Clock": 300,
+      "HWV": 29297,
+      "FWV": 7500055,
+      "Algo": "Qubit",
+      "USB Pipe": "0",
+      "USB Delay": "r0 0.000000 w0 0.000000",
+      "USB tmo": "11 0"
+    },
+    {
+      "STATS": 2,
+      "ID": "BKLU2",
+      "Elapsed": 682,
+      "Calls": 0,
+      "Wait": 0.0,
+      "Max": 0.0,
+      "Min": 99999999.0,
+      "Chip Count": 64,
+      "Clock": 300,
+      "HWV": 29297,
+      "FWV": 7500055,
+      "Algo": "Qubit",
+      "USB Pipe": "0",
+      "USB Delay": "r0 0.000000 w0 0.000000",
+      "USB tmo": "11 0"
+    }
+  ],
+  "id": 1
+}
