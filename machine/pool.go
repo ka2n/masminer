@@ -1,4 +1,4 @@
-package inspect
+package machine
 
 // Pool common formatted pool
 type Pool struct {

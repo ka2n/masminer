@@ -1,4 +1,4 @@
-package inspect
+package machine
 
 // MinerSetting is a miner setting
 type MinerSetting struct {

@@ -1,4 +1,4 @@
-package inspect
+package machine
 
 // RigStat is a status of machine
 type RigStat struct {

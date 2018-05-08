@@ -1,4 +1,4 @@
-package inspect
+package machine
 
 // RemoteRig is a reference to remote rig
 type RemoteRig struct {
