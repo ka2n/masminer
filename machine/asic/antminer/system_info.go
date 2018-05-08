@@ -1,12 +1,12 @@
 package antminer
 
-import "github.com/ka2n/masminer/inspect"
+import "github.com/ka2n/masminer/machine"
 
 // SystemInfo : Generic system info
 type SystemInfo struct {
 	MACAddr           string
 	Hostname          string
-	ProductType       inspect.MinerType
+	ProductType       machine.MinerType
 	SystemMode        string
 	KernelVersion     string
 	FileSystemVersion string

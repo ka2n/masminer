@@ -1,8 +1,8 @@
 package gpu
 
 import (
-	"github.com/ka2n/masminer/inspect/metal/gpu/ethos"
-	"github.com/ka2n/masminer/inspect/metal/gpu/gpustat"
+	"github.com/ka2n/masminer/machine/metal/gpu/ethos"
+	"github.com/ka2n/masminer/machine/metal/gpu/gpustat"
 )
 
 // Stat : GPUの情報をベンダーごとに集めます

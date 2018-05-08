@@ -2,15 +2,15 @@ package baikal
 
 import (
 	"github.com/ka2n/baikalver"
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 )
 
 // List of supported MinerType
 const (
-	MinerTypeGP   inspect.MinerType = "Baikal Gaiant+"
-	MinerTypeGX10 inspect.MinerType = "Baikal GX10"     // a.k.a. BK-X
-	MinerTypeGB   inspect.MinerType = "Baikal Gaiant-B" // a.k.a. BK-B
-	MinerTypeN    inspect.MinerType = "Baikal N"        // a.k.a. BK-N+
+	MinerTypeGP   machine.MinerType = "Baikal Gaiant+"
+	MinerTypeGX10 machine.MinerType = "Baikal GX10"     // a.k.a. BK-X
+	MinerTypeGB   machine.MinerType = "Baikal Gaiant-B" // a.k.a. BK-B
+	MinerTypeN    machine.MinerType = "Baikal N"        // a.k.a. BK-N+
 )
 
 const (
@@ -33,10 +33,10 @@ const (
 	algoCryptonightLite = "cryptonight-lite"
 )
 
-func minerTypeFromAPIHWV(s string) (inspect.MinerType, error) {
+func minerTypeFromAPIHWV(s string) (machine.MinerType, error) {
 	m, err := baikalver.ModelFromHWV(s)
 	if err != nil {
-		return inspect.MinerTypeUnknown, err
+		return machine.MinerTypeUnknown, err
 	}
 	switch m {
 	case baikalver.GX10:
@@ -48,7 +48,7 @@ func minerTypeFromAPIHWV(s string) (inspect.MinerType, error) {
 	case baikalver.GN20, baikalver.GN40:
 		return MinerTypeN, nil
 	default:
-		return inspect.MinerTypeUnknown, nil
+		return machine.MinerTypeUnknown, nil
 	}
 }
 
@@ -57,7 +57,7 @@ func minerVersionFromFWV(s string) (string, error) {
 }
 
 // Algos returns list of supported algo
-func Algos(m inspect.MinerType) []string {
+func Algos(m machine.MinerType) []string {
 	switch m {
 	case MinerTypeGX10:
 		// X11 Quark Qubit Myriad-Groestl Skein X11Gost Nist5

@@ -10,16 +10,16 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 	"github.com/ka2n/masminer/netscan"
 	"github.com/mostlygeek/arp"
 )
 
 // DiscoverByIPScan : find ASICs by scan network
-func DiscoverByIPScan(ctx context.Context, networks []string, portBegin int, portEnd int) ([]inspect.RemoteRig, error) {
+func DiscoverByIPScan(ctx context.Context, networks []string, portBegin int, portEnd int) ([]machine.RemoteRig, error) {
 	// Scan IPs
 	dnsClient := &dns.Client{}
-	result := make([]inspect.RemoteRig, 0)
+	result := make([]machine.RemoteRig, 0)
 	for _, netmask := range networks {
 		ret, err := netscan.Scan(netmask, portBegin, portEnd)
 		if err != nil {
@@ -29,9 +29,9 @@ func DiscoverByIPScan(ctx context.Context, networks []string, portBegin int, por
 			// Collect mac addr from ARP table
 			mac := arp.Search(r.IP)
 
-			var rig inspect.RemoteRig
+			var rig machine.RemoteRig
 			if mac != "" {
-				rig.Name = inspect.ShortName(mac)
+				rig.Name = machine.ShortName(mac)
 				rig.MACAddr = mac
 			}
 			rig.IPAddr = r.IP
@@ -43,7 +43,7 @@ func DiscoverByIPScan(ctx context.Context, networks []string, portBegin int, por
 }
 
 // DiscoverByMCast find ASICs by broadcast message
-func DiscoverByMCast(ctx context.Context, mcastCode string, mcastAddr string, mcastListenPort int, timeout time.Duration, handler func(inspect.RemoteRig)) error {
+func DiscoverByMCast(ctx context.Context, mcastCode string, mcastAddr string, mcastListenPort int, timeout time.Duration, handler func(machine.RemoteRig)) error {
 	bufSize := 8192
 
 	// Create socket to broadcast message
@@ -85,7 +85,7 @@ func DiscoverByMCast(ctx context.Context, mcastCode string, mcastAddr string, mc
 			}
 
 			// Parse received message
-			var rig inspect.RemoteRig
+			var rig machine.RemoteRig
 			buffer = bytes.Trim(buffer, "\x00")
 			body := string(buffer)
 			ans := strings.SplitN(body, "-", 4)

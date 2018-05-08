@@ -3,7 +3,7 @@ package asic
 import (
 	"context"
 
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -34,20 +34,20 @@ type Controller interface {
 
 // InfoReader : ASIC basic info
 type InfoReader interface {
-	RigInfo(context.Context) (inspect.RigInfo, error)
+	RigInfo(context.Context) (machine.RigInfo, error)
 }
 
 // StatReader : ASIC status
 type StatReader interface {
-	RigStat(context.Context) (inspect.RigStat, error)
+	RigStat(context.Context) (machine.RigStat, error)
 }
 
 // SettingReader : get setting
 type SettingReader interface {
-	MinerSetting(context.Context) (inspect.MinerSetting, error)
+	MinerSetting(context.Context) (machine.MinerSetting, error)
 }
 
 // SettingWriter updates setting
 type SettingWriter interface {
-	SetMinerSetting(context.Context, inspect.MinerSetting) error
+	SetMinerSetting(context.Context, machine.MinerSetting) error
 }

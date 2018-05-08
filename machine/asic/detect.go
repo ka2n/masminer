@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ka2n/masminer/inspect"
-	"github.com/ka2n/masminer/inspect/asic/antminer"
-	"github.com/ka2n/masminer/inspect/asic/baikal"
+	"github.com/ka2n/masminer/machine"
+	"github.com/ka2n/masminer/machine/asic/antminer"
+	"github.com/ka2n/masminer/machine/asic/baikal"
 	"golang.org/x/crypto/ssh"
 )
 
 // Dial : get asic client from RemoteRig
-func Dial(r inspect.RemoteRig) (Client, error) {
+func Dial(r machine.RemoteRig) (Client, error) {
 	rw, err := dialByHostname(r.IPAddr, r.Hostname)
 	if err != nil {
 		return nil, err

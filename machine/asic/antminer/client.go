@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -43,8 +43,8 @@ func (c *Client) Close() error {
 	return c.ssh.Close()
 }
 
-func (c *Client) RigInfo(ctx context.Context) (inspect.RigInfo, error) {
-	var info inspect.RigInfo
+func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
+	var info machine.RigInfo
 	si, err := c.GetSystemInfo()
 	if err != nil {
 		return info, err
@@ -52,7 +52,7 @@ func (c *Client) RigInfo(ctx context.Context) (inspect.RigInfo, error) {
 	info.Rig.IPAddr = c.ssh.RemoteAddr().String()
 	info.Rig.Hostname = si.Hostname
 	info.Rig.MACAddr = si.MACAddr
-	info.Rig.Name = inspect.ShortName(si.MACAddr)
+	info.Rig.Name = machine.ShortName(si.MACAddr)
 	info.MinerType = si.ProductType
 	info.Manufacture = manufactureName
 	info.HardwareVersion = strings.Join(si.HardwareVersions, ",")
@@ -62,8 +62,8 @@ func (c *Client) RigInfo(ctx context.Context) (inspect.RigInfo, error) {
 	return info, nil
 }
 
-func (c *Client) RigStat(ctx context.Context) (inspect.RigStat, error) {
-	var stat inspect.RigStat
+func (c *Client) RigStat(ctx context.Context) (machine.RigStat, error) {
+	var stat machine.RigStat
 
 	ms, err := c.GetStats()
 	if err != nil {
@@ -77,9 +77,9 @@ func (c *Client) RigStat(ctx context.Context) (inspect.RigStat, error) {
 	stat.HardwareErrors = ms.Summary.HardwareErrors
 	stat.Utility = ms.Summary.Utility
 
-	stat.Devices = make([]inspect.DeviceStat, len(ms.Devs.Chains))
+	stat.Devices = make([]machine.DeviceStat, len(ms.Devs.Chains))
 	for i, c := range ms.Devs.Chains {
-		var st inspect.DeviceStat
+		var st machine.DeviceStat
 		st.TempChip = c.TempChip
 		st.TempPCB = c.TempPCB
 		st.Frequency = c.Freq
@@ -89,9 +89,9 @@ func (c *Client) RigStat(ctx context.Context) (inspect.RigStat, error) {
 		stat.Devices[i] = st
 	}
 
-	stat.Pools = make([]inspect.PoolStat, len(ms.Pools))
+	stat.Pools = make([]machine.PoolStat, len(ms.Pools))
 	for i, pl := range ms.Pools {
-		var p inspect.PoolStat
+		var p machine.PoolStat
 		p.URL = pl.URL
 		p.User = pl.User
 		p.Status = pl.Status
@@ -113,15 +113,15 @@ func (c *Client) RigStat(ctx context.Context) (inspect.RigStat, error) {
 	return stat, nil
 }
 
-func (c *Client) MinerSetting(ctx context.Context) (inspect.MinerSetting, error) {
+func (c *Client) MinerSetting(ctx context.Context) (machine.MinerSetting, error) {
 	ms, err := c.GetMinerSetting()
 	if err != nil {
-		return inspect.MinerSetting{}, err
+		return machine.MinerSetting{}, err
 	}
 	return ms.CommonMinerSetting(), nil
 }
 
-func (c *Client) SetMinerSetting(ctx context.Context, setting inspect.MinerSetting) error {
+func (c *Client) SetMinerSetting(ctx context.Context, setting machine.MinerSetting) error {
 	var ms MinerSetting
 	if err := ms.LoadCommonMinerSetting(setting); err != nil {
 		return err

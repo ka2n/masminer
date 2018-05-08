@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ka2n/masminer/inspect"
-	"github.com/ka2n/masminer/inspect/asic"
+	"github.com/ka2n/masminer/machine"
+	"github.com/ka2n/masminer/machine/asic"
 )
 
 var (
@@ -48,12 +48,12 @@ func main() {
 	watchRigs(rigs)
 }
 
-func watchRigs(rigs []inspect.RemoteRig) error {
+func watchRigs(rigs []machine.RemoteRig) error {
 	ctx := context.Background()
 	tick := time.NewTicker(time.Second * 10)
 	defer tick.Stop()
 
-	result := make(map[string]inspect.RigInfo)
+	result := make(map[string]machine.RigInfo)
 	mu := sync.Mutex{}
 
 	for {

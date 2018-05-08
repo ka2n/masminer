@@ -3,13 +3,13 @@ package antminer
 import (
 	"strings"
 
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 )
 
 // List of supported MinerType
 const (
-	MinerTypeL3P inspect.MinerType = "Antminer L3+"
-	MinerTypeX3  inspect.MinerType = "Antminer X3"
+	MinerTypeL3P machine.MinerType = "Antminer L3+"
+	MinerTypeX3  machine.MinerType = "Antminer X3"
 )
 
 const (
@@ -18,18 +18,18 @@ const (
 )
 
 // MinerTypeFromString returns MinerType
-func MinerTypeFromString(s string) (inspect.MinerType, error) {
+func MinerTypeFromString(s string) (machine.MinerType, error) {
 	switch {
 	case strings.Contains(s, "X3"):
 		return MinerTypeX3, nil
 	case strings.Contains(s, "L3+"):
 		return MinerTypeL3P, nil
 	}
-	return inspect.MinerTypeUnknown, nil
+	return machine.MinerTypeUnknown, nil
 }
 
 // Algos returns list of supported algo
-func Algos(m inspect.MinerType) []string {
+func Algos(m machine.MinerType) []string {
 	switch m {
 	case MinerTypeL3P:
 		return []string{

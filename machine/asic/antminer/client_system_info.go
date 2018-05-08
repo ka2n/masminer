@@ -3,7 +3,7 @@ package antminer
 import (
 	"bytes"
 
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -71,10 +71,10 @@ func getHostname(client *ssh.Client) (string, error) {
 	return string(ret), err
 }
 
-func getMinerType(client *ssh.Client) (inspect.MinerType, error) {
+func getMinerType(client *ssh.Client) (machine.MinerType, error) {
 	ret, err := outputRemoteShell(client, `sed -n 2p `+metadataPath)
 	if err != nil {
-		return inspect.MinerTypeUnknown, err
+		return machine.MinerTypeUnknown, err
 	}
 	return MinerTypeFromString(string(ret))
 }

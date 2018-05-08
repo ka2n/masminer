@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -149,12 +149,12 @@ sudo chown www-data $MINER_OPTIONS_PATH
 	return err
 }
 
-func getCommonMinerSetting(m MinerSetting, ps []PoolSetting) inspect.MinerSetting {
-	var s inspect.MinerSetting
+func getCommonMinerSetting(m MinerSetting, ps []PoolSetting) machine.MinerSetting {
+	var s machine.MinerSetting
 	s.Options = m
-	pools := make([]inspect.Pool, len(ps))
+	pools := make([]machine.Pool, len(ps))
 	for i, p := range ps {
-		var pool inspect.Pool
+		var pool machine.Pool
 		pool.URL = p.URL
 		pool.User = p.User
 		pool.Pass = p.Pass
@@ -168,7 +168,7 @@ func getCommonMinerSetting(m MinerSetting, ps []PoolSetting) inspect.MinerSettin
 	return s
 }
 
-func loadCommonMinerSetting(s inspect.MinerSetting, m *MinerSetting, ps *[]PoolSetting) error {
+func loadCommonMinerSetting(s machine.MinerSetting, m *MinerSetting, ps *[]PoolSetting) error {
 	mv := make(MinerSetting)
 
 	mv["api-port"] = defaultAPIPort

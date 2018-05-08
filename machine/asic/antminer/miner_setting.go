@@ -1,7 +1,7 @@
 package antminer
 
 import (
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 )
 
 // MinerSetting : /config/cgminer.conf
@@ -17,7 +17,7 @@ type PoolSetting struct {
 	Pass string `json:"pass"`
 }
 
-func (m *MinerSetting) LoadCommonMinerSetting(s inspect.MinerSetting) error {
+func (m *MinerSetting) LoadCommonMinerSetting(s machine.MinerSetting) error {
 	var mv MinerSetting
 	opt := make(map[string]string)
 	opt["api-allow"] = defaultAPIAllow
@@ -44,17 +44,17 @@ func (m *MinerSetting) LoadCommonMinerSetting(s inspect.MinerSetting) error {
 	return nil
 }
 
-func (m MinerSetting) CommonMinerSetting() inspect.MinerSetting {
-	var s inspect.MinerSetting
+func (m MinerSetting) CommonMinerSetting() machine.MinerSetting {
+	var s machine.MinerSetting
 
 	s.Options = make(map[string]string)
 	for k, v := range m.Options {
 		s.Options[k] = v
 	}
 
-	s.Pools = make([]inspect.Pool, len(m.Pools))
+	s.Pools = make([]machine.Pool, len(m.Pools))
 	for i, p := range m.Pools {
-		var pool inspect.Pool
+		var pool machine.Pool
 		pool.URL = p.URL
 		pool.User = p.User
 		pool.Pass = p.Pass

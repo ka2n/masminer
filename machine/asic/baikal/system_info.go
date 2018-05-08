@@ -1,7 +1,7 @@
 package baikal
 
 import (
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 )
 
 type SystemInfo struct {
@@ -9,7 +9,7 @@ type SystemInfo struct {
 	Hostname      string
 	KernelVersion string
 
-	ProductType    inspect.MinerType
+	ProductType    machine.MinerType
 	ProductVersion string
 
 	FileSystemVersion string

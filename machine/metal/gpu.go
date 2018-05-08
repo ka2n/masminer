@@ -1,8 +1,8 @@
 package metal
 
 import (
-	"github.com/ka2n/masminer/inspect/metal/gpu"
-	"github.com/ka2n/masminer/inspect/metal/gpu/gpustat"
+	"github.com/ka2n/masminer/machine/metal/gpu"
+	"github.com/ka2n/masminer/machine/metal/gpu/gpustat"
 )
 
 // GPUInfo : GPUの情報を取得します

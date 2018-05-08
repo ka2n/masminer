@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ka2n/masminer/inspect/metal/gpu/gpustat"
+	"github.com/ka2n/masminer/machine/metal/gpu/gpustat"
 )
 
 // Stat : gpuの情報をethOSのAPIで取得します

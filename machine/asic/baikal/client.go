@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -48,8 +48,8 @@ func (c *Client) Close() error {
 	return c.ssh.Close()
 }
 
-func (c *Client) RigInfo(ctx context.Context) (inspect.RigInfo, error) {
-	var info inspect.RigInfo
+func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
+	var info machine.RigInfo
 	si, err := c.GetSystemInfo()
 	if err != nil {
 		return info, err
@@ -57,7 +57,7 @@ func (c *Client) RigInfo(ctx context.Context) (inspect.RigInfo, error) {
 
 	info.Rig.IPAddr = c.ssh.LocalAddr().String()
 	info.Rig.Hostname = si.Hostname
-	info.Rig.Name = inspect.ShortName(si.MACAddr)
+	info.Rig.Name = machine.ShortName(si.MACAddr)
 	info.MinerType = si.ProductType
 	info.Manufacture = manufactureName
 	info.HardwareVersion = si.ProductVersion
@@ -68,8 +68,8 @@ func (c *Client) RigInfo(ctx context.Context) (inspect.RigInfo, error) {
 	return info, nil
 }
 
-func (c *Client) RigStat(ctx context.Context) (inspect.RigStat, error) {
-	var stat inspect.RigStat
+func (c *Client) RigStat(ctx context.Context) (machine.RigStat, error) {
+	var stat machine.RigStat
 
 	ms, err := c.GetStats()
 	if err != nil {
@@ -90,11 +90,11 @@ func (c *Client) RigStat(ctx context.Context) (inspect.RigStat, error) {
 		return stat, fmt.Errorf("invalid stats/devs")
 	}
 
-	stat.Devices = make([]inspect.DeviceStat, len(ms.Devs))
+	stat.Devices = make([]machine.DeviceStat, len(ms.Devs))
 	for i, ds := range ms.Devs {
 		st := ms.Stats[i]
 
-		var dev inspect.DeviceStat
+		var dev machine.DeviceStat
 		dev.Chips = st.ChipCount
 		dev.Frequency = strconv.Itoa(st.Clock)
 		dev.TempChip = fmt.Sprintf("%.1f", ds.Temperature)
@@ -103,9 +103,9 @@ func (c *Client) RigStat(ctx context.Context) (inspect.RigStat, error) {
 		stat.Devices[i] = dev
 	}
 
-	stat.Pools = make([]inspect.PoolStat, len(ms.Pools))
+	stat.Pools = make([]machine.PoolStat, len(ms.Pools))
 	for i, pl := range ms.Pools {
-		var p inspect.PoolStat
+		var p machine.PoolStat
 		p.URL = pl.URL
 		p.User = pl.User
 		p.Algo = pl.Algorithm
@@ -128,8 +128,8 @@ func (c *Client) RigStat(ctx context.Context) (inspect.RigStat, error) {
 	return stat, nil
 }
 
-func (c *Client) MinerSetting(ctx context.Context) (inspect.MinerSetting, error) {
-	var s inspect.MinerSetting
+func (c *Client) MinerSetting(ctx context.Context) (machine.MinerSetting, error) {
+	var s machine.MinerSetting
 
 	ms, err := getMinerSetting(c.ssh)
 	if err != nil {
@@ -144,7 +144,7 @@ func (c *Client) MinerSetting(ctx context.Context) (inspect.MinerSetting, error)
 	return getCommonMinerSetting(ms, ps), nil
 }
 
-func (c *Client) SetMinerSetting(ctx context.Context, setting inspect.MinerSetting) error {
+func (c *Client) SetMinerSetting(ctx context.Context, setting machine.MinerSetting) error {
 	var ms MinerSetting
 	var ps []PoolSetting
 

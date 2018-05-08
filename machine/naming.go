@@ -1,4 +1,4 @@
-package inspect
+package machine
 
 import "strings"
 

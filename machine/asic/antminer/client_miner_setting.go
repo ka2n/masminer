@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ka2n/masminer/inspect"
+	"github.com/ka2n/masminer/machine"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -37,7 +37,7 @@ EOF
 	return err
 }
 
-func getMinerSetting(client *ssh.Client, minerType inspect.MinerType) (setting MinerSetting, err error) {
+func getMinerSetting(client *ssh.Client, minerType machine.MinerType) (setting MinerSetting, err error) {
 	defaultConf := defaultSetting(minerType)
 	dconfb, err := json.Marshal(defaultConf)
 	if err != nil {
@@ -64,7 +64,7 @@ cat $CONFIG_PATH
 	return
 }
 
-func defaultSetting(mt inspect.MinerType) (setting MinerSetting) {
+func defaultSetting(mt machine.MinerType) (setting MinerSetting) {
 	opt := make(map[string]string)
 	opt["api-allow"] = defaultAPIAllow
 	opt["api-groups"] = defaultAPIGroups
