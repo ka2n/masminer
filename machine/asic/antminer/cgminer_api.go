@@ -6,6 +6,7 @@ import (
 )
 
 func parseCGMinerStats(in []byte) []map[string]string {
+	in = bytes.TrimSpace(in)
 	segs := bytes.Split(in, []byte{'|'})
 	lprops := make([]map[string]string, 0, len(segs))
 
