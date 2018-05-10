@@ -2,9 +2,12 @@ package antminer
 
 import (
 	"bytes"
+	"sync"
 
 	"github.com/ka2n/masminer/machine"
+	mnet "github.com/ka2n/masminer/net"
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/sync/errgroup"
 )
 
 // GetSystemInfo returns SystemInfo
@@ -30,39 +33,97 @@ func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
 }
 
 func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
-	info.MACAddr, err = getMacAddr(client)
-	if err != nil {
-		return info, err
-	}
-	info.IPAddr, err = getIPAddr(client)
-	if err != nil {
-		return info, err
-	}
-	info.Hostname, err = getHostname(client)
-	if err != nil {
-		return info, err
-	}
-	info.ProductType, err = getMinerType(client)
-	if err != nil {
-		return info, err
-	}
-	info.KernelVersion, err = getKernelVersion(client)
-	if err != nil {
-		return info, err
-	}
-	info.FileSystemVersion, err = getFileSystemVersion(client)
-	if err != nil {
-		return info, err
-	}
-	info.CGMinerVersion, err = getCGMinerVersion(client)
-	if err != nil {
-		return info, err
-	}
-	info.HardwareVersions, err = getHardwareVersions(client)
-	if err != nil {
-		return info, err
-	}
-	return info, nil
+	var wg errgroup.Group
+	var mu sync.Mutex
+
+	wg.Go(func() error {
+		ret, err := getMacAddr(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.MACAddr = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getIPAddr(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.IPAddr = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getHostname(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.Hostname = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getProductType(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.ProductType = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getKernelVersion(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.KernelVersion = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getFileSystemVersion(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.FileSystemVersion = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getCGMinerVersion(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.CGMinerVersion = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getHardwareVersions(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.HardwareVersions = ret
+		return nil
+	})
+	return info, wg.Wait()
 }
 
 func getMacAddr(client *ssh.Client) (string, error) {
@@ -75,7 +136,7 @@ func getHostname(client *ssh.Client) (string, error) {
 	return string(ret), err
 }
 
-func getMinerType(client *ssh.Client) (machine.MinerType, error) {
+func getProductType(client *ssh.Client) (machine.MinerType, error) {
 	ret, err := outputRemoteShell(client, `sed -n 2p `+metadataPath)
 	if err != nil {
 		return machine.MinerTypeUnknown, err

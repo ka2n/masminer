@@ -1,24 +1,50 @@
 package antminer
 
 import (
+	"sync"
+
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/sync/errgroup"
 )
 
 // GetStats returns MinerStats
 func (c *Client) GetStats() (stats MinerStats, err error) {
-	stats.Summary, err = getMinerStatsSummary(c.ssh)
-	if err != nil {
-		return stats, err
-	}
-	stats.Pools, err = getMinerStatsPools(c.ssh)
-	if err != nil {
-		return stats, err
-	}
-	stats.Devs, err = getMinerStatsDevs(c.ssh)
-	if err != nil {
-		return stats, err
-	}
-	return
+	var wg errgroup.Group
+	var mu sync.Mutex
+
+	wg.Go(func() error {
+		ret, err := getMinerStatsSummary(c.ssh)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		stats.Summary = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getMinerStatsPools(c.ssh)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		stats.Pools = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := getMinerStatsDevs(c.ssh)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		stats.Devs = ret
+		return nil
+	})
+	return stats, wg.Wait()
 }
 
 func getMinerStatsSummary(client *ssh.Client) (summary MinerStatsSummary, err error) {

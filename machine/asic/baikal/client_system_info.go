@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"sync"
 
+	mnet "github.com/ka2n/masminer/net"
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/sync/errgroup"
 )
 
 func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
@@ -17,7 +20,7 @@ func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
 	}
 	c.mu.RUnlock()
 
-	info, err = c.getSystemInfo()
+	info, err = getSystemInfo(c.ssh)
 	if err != nil {
 		return info, err
 	}
@@ -29,64 +32,112 @@ func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
 	return info, nil
 }
 
-func (c *Client) getSystemInfo() (info SystemInfo, err error) {
-	info.MACAddr, err = getMacAddr(c.ssh)
-	if err != nil {
-		return info, err
-	}
-	info.IPAddr, err = getIPAddr(c.ssh)
-	if err != nil {
-		return info, err
-	}
-	info.Hostname, err = getHostname(c.ssh)
-	if err != nil {
-		return info, err
-	}
-	info.KernelVersion, err = getKernelVersion(c.ssh)
-	if err != nil {
-		return info, err
-	}
-	info.FileSystemVersion, err = getFileSystemVersion(c.ssh)
-	if err != nil {
-		return info, err
-	}
+func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
+	var wg errgroup.Group
+	var mu sync.Mutex
 
-	ret, err := outputMinerRPC(c.ssh, "stats+version", "")
-	if err != nil {
-		return info, err
-	}
+	wg.Go(func() error {
+		ret, err := getMacAddr(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.MACAddr = ret
+		return nil
+	})
 
-	var resp struct {
-		SGMultipleCMDResponse
-		Version []SGVersionResponse `json:"version"`
-		Stats   []SGStatsResponse   `json:"stats"`
-	}
-	err = json.Unmarshal(ret, &resp)
-	if err != nil {
-		return info, err
-	}
+	wg.Go(func() error {
+		ret, err := getIPAddr(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.IPAddr = ret
+		return nil
+	})
 
-	if !(len(resp.Version) == 1 && len(resp.Version[0].Version) == 1) {
-		return info, fmt.Errorf("error sgminer RPC response")
-	}
-	version := resp.Version[0].Version[0]
-	info.MinerDescription = version.Miner
-	info.MinerVersion = version.SGMiner
-	info.APIVersion = version.API
+	wg.Go(func() error {
+		ret, err := getHostname(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.Hostname = ret
+		return nil
+	})
 
-	if !(len(resp.Stats) != 0 && len(resp.Stats[0].Stats) != 0) {
-		return info, fmt.Errorf("error sgminer RPC response")
-	}
-	stat := resp.Stats[0].Stats[0]
+	wg.Go(func() error {
+		ret, err := getKernelVersion(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.KernelVersion = ret
+		return nil
+	})
 
-	info.ProductType, err = minerTypeFromAPIHWV(stat.HWV.String())
-	if err != nil {
-		return info, err
-	}
-	info.ProductVersion, err = minerVersionFromFWV(stat.FWV.String())
-	if err != nil {
-		return info, err
-	}
+	wg.Go(func() error {
+		ret, err := getFileSystemVersion(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.FileSystemVersion = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := outputMinerRPC(client, "stats+version", "")
+		if err != nil {
+			return err
+		}
+
+		var resp struct {
+			SGMultipleCMDResponse
+			Version []SGVersionResponse `json:"version"`
+			Stats   []SGStatsResponse   `json:"stats"`
+		}
+		err = json.Unmarshal(ret, &resp)
+		if err != nil {
+			return err
+		}
+
+		if !(len(resp.Version) == 1 && len(resp.Version[0].Version) == 1) {
+			return fmt.Errorf("error sgminer RPC response")
+		}
+
+		mu.Lock()
+		version := resp.Version[0].Version[0]
+		info.MinerDescription = version.Miner
+		info.MinerVersion = version.SGMiner
+		info.APIVersion = version.API
+		mu.Unlock()
+
+		if !(len(resp.Stats) != 0 && len(resp.Stats[0].Stats) != 0) {
+			return fmt.Errorf("error sgminer RPC response")
+		}
+
+		stat := resp.Stats[0].Stats[0]
+
+		mu.Lock()
+		defer mu.Unlock()
+
+		info.ProductType, err = minerTypeFromAPIHWV(stat.HWV.String())
+		if err != nil {
+			return err
+		}
+		info.ProductVersion, err = minerVersionFromFWV(stat.FWV.String())
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
 	return info, nil
 }
 
