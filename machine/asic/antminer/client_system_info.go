@@ -34,6 +34,10 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	if err != nil {
 		return info, err
 	}
+	info.IPAddr, err = getIPAddr(client)
+	if err != nil {
+		return info, err
+	}
 	info.Hostname, err = getHostname(client)
 	if err != nil {
 		return info, err
@@ -100,4 +104,12 @@ func getHardwareVersions(client *ssh.Client) ([]string, error) {
 		return nil, err
 	}
 	return parseHWVersionsFromCGMinerStats(bytes.TrimSpace(ret))
+}
+
+func getIPAddr(client *ssh.Client) (string, error) {
+	ret, err := outputRemoteShell(client, `ip a show eth0 | grep -o 'inet.*' | cut -d' ' -f2`)
+	if err != nil {
+		return string(ret), err
+	}
+	return mnet.ParseIPAddr(string(bytes.TrimSpace(ret)))
 }

@@ -5,6 +5,7 @@ import (
 )
 
 type SystemInfo struct {
+	IPAddr        string
 	MACAddr       string
 	Hostname      string
 	KernelVersion string

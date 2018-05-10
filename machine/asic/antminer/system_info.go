@@ -4,6 +4,7 @@ import "github.com/ka2n/masminer/machine"
 
 // SystemInfo : Generic system info
 type SystemInfo struct {
+	IPAddr            string
 	MACAddr           string
 	Hostname          string
 	ProductType       machine.MinerType

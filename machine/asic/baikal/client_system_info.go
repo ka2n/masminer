@@ -34,6 +34,10 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	if err != nil {
 		return info, err
 	}
+	info.IPAddr, err = getIPAddr(c.ssh)
+	if err != nil {
+		return info, err
+	}
 	info.Hostname, err = getHostname(c.ssh)
 	if err != nil {
 		return info, err
@@ -104,4 +108,12 @@ func getKernelVersion(client *ssh.Client) (string, error) {
 func getFileSystemVersion(client *ssh.Client) (string, error) {
 	ret, err := outputRemoteShell(client, `uname -v`)
 	return string(bytes.TrimSpace(ret)), err
+}
+
+func getIPAddr(client *ssh.Client) (string, error) {
+	ret, err := outputRemoteShell(client, `ip a show eth0 | grep -o 'inet.*' | cut -d' ' -f2`)
+	if err != nil {
+		return string(ret), err
+	}
+	return mnet.ParseIPAddr(string(bytes.TrimSpace(ret)))
 }

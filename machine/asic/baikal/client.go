@@ -55,9 +55,10 @@ func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 		return info, err
 	}
 
-	info.Rig.IPAddr = c.ssh.LocalAddr().String()
+	info.Rig.IPAddr = si.IPAddr
 	info.Rig.Hostname = si.Hostname
 	info.Rig.Name = machine.ShortName(si.MACAddr)
+	info.Rig.MACAddr = si.MACAddr
 	info.MinerType = si.ProductType
 	info.Manufacture = manufactureName
 	info.HardwareVersion = si.ProductVersion

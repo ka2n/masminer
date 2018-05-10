@@ -49,7 +49,7 @@ func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 	if err != nil {
 		return info, err
 	}
-	info.Rig.IPAddr = c.ssh.RemoteAddr().String()
+	info.Rig.IPAddr = si.IPAddr
 	info.Rig.Hostname = si.Hostname
 	info.Rig.MACAddr = si.MACAddr
 	info.Rig.Name = machine.ShortName(si.MACAddr)
