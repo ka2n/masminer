@@ -138,7 +138,7 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 		return nil
 	})
 
-	return info, nil
+	return info, wg.Wait()
 }
 
 func getMacAddr(client *ssh.Client) (string, error) {
