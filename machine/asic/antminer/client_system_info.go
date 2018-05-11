@@ -168,7 +168,7 @@ func getHardwareVersions(client *ssh.Client) ([]string, error) {
 }
 
 func getIPAddr(client *ssh.Client) (string, error) {
-	ret, err := outputRemoteShell(client, `ip a show eth0 | grep -o 'inet.*' | cut -d' ' -f2`)
+	ret, err := outputRemoteShell(client, `ip a show eth0 | grep -o 'inet\s.*' | cut -d' ' -f2`)
 	if err != nil {
 		return string(ret), err
 	}
