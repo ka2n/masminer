@@ -2,7 +2,6 @@ package antminer
 
 import (
 	"bytes"
-	"fmt"
 	"sync"
 
 	"github.com/ka2n/masminer/machine"
@@ -132,7 +131,6 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 func getMacAddr(client *ssh.Client, ipCMD string) (string, error) {
 	cmd := ipCMD + ` link show eth0 | grep -o 'link/.*' | cut -d' ' -f2`
 	ret, err := outputRemoteShell(client, cmd)
-	fmt.Println(cmd, string(ret))
 	return string(bytes.TrimSpace(ret)), err
 }
 
