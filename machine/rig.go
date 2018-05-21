@@ -12,9 +12,10 @@ type RemoteRig struct {
 type RigInfo struct {
 	Rig             RemoteRig
 	Manufacture     string
-	MinerType       MinerType
+	Model           Model
 	HardwareVersion string
 	FirmwareVersion string
+	MinerType       string
 	MinerVersion    string
 	Algos           []string
 }

@@ -10,7 +10,7 @@ type SystemInfo struct {
 	Hostname      string
 	KernelVersion string
 
-	ProductType    machine.MinerType
+	ProductType    machine.Model
 	ProductVersion string
 
 	FileSystemVersion string

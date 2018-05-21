@@ -7,10 +7,10 @@ import (
 
 // List of supported MinerType
 const (
-	MinerTypeGP   machine.MinerType = "Baikal Gaiant+"
-	MinerTypeGX10 machine.MinerType = "Baikal GX10"     // a.k.a. BK-X
-	MinerTypeGB   machine.MinerType = "Baikal Gaiant-B" // a.k.a. BK-B
-	MinerTypeN    machine.MinerType = "Baikal N"        // a.k.a. BK-N+
+	ModelGP   machine.Model = "Baikal Gaiant+"
+	ModelGX10 machine.Model = "Baikal GX10"     // a.k.a. BK-X
+	ModelGB   machine.Model = "Baikal Gaiant-B" // a.k.a. BK-B
+	ModelN    machine.Model = "Baikal N"        // a.k.a. BK-N+
 )
 
 const (
@@ -33,22 +33,22 @@ const (
 	algoCryptonightLite = "cryptonight-lite"
 )
 
-func minerTypeFromAPIHWV(s string) (machine.MinerType, error) {
+func modelFromAPIHWV(s string) (machine.Model, error) {
 	m, err := baikalver.ModelFromHWV(s)
 	if err != nil {
-		return machine.MinerTypeUnknown, err
+		return machine.ModelUnknown, err
 	}
 	switch m {
 	case baikalver.GX10:
-		return MinerTypeGX10, nil
+		return ModelGX10, nil
 	case baikalver.GB:
-		return MinerTypeGB, nil
+		return ModelGB, nil
 	case baikalver.GiantP:
-		return MinerTypeGP, nil
+		return ModelGP, nil
 	case baikalver.GN20, baikalver.GN40:
-		return MinerTypeN, nil
+		return ModelN, nil
 	default:
-		return machine.MinerTypeUnknown, nil
+		return machine.ModelUnknown, nil
 	}
 }
 
@@ -57,9 +57,9 @@ func minerVersionFromFWV(s string) (string, error) {
 }
 
 // Algos returns list of supported algo
-func Algos(m machine.MinerType) []string {
+func Algos(m machine.Model) []string {
 	switch m {
-	case MinerTypeGX10:
+	case ModelGX10:
 		// X11 Quark Qubit Myriad-Groestl Skein X11Gost Nist5
 		return []string{
 			algoX11,
@@ -70,7 +70,7 @@ func Algos(m machine.MinerType) []string {
 			algoX11Gost,
 			algoNist5,
 		}
-	case MinerTypeGP:
+	case ModelGP:
 		return []string{
 			algoX11,
 			algoX13,
@@ -79,7 +79,7 @@ func Algos(m machine.MinerType) []string {
 			algoQuark,
 			algoQubit,
 		}
-	case MinerTypeGB:
+	case ModelGB:
 		// blake256r14 blake256r8 blake2b blake2b lbry pascal
 		return []string{
 			algoBlake256r14,
@@ -88,7 +88,7 @@ func Algos(m machine.MinerType) []string {
 			algoLbry,
 			algoPascal,
 		}
-	case MinerTypeN:
+	case ModelN:
 		// cryptonight cryptonight-lite
 		return []string{
 			algoCryptonight,

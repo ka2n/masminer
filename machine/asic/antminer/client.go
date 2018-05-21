@@ -53,12 +53,13 @@ func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 	info.Rig.Hostname = si.Hostname
 	info.Rig.MACAddr = si.MACAddr
 	info.Rig.Name = machine.ShortName(si.MACAddr)
-	info.MinerType = si.ProductType
 	info.Manufacture = manufactureName
+	info.Model = si.Model
 	info.HardwareVersion = strings.Join(si.HardwareVersions, ",")
 	info.FirmwareVersion = si.FileSystemVersion
-	info.MinerVersion = si.CGMinerVersion
-	info.Algos = Algos(si.ProductType)
+	info.MinerVersion = si.MinerVersion
+	info.MinerType = si.MinerType
+	info.Algos = Algos(si.Model)
 	return info, nil
 }
 

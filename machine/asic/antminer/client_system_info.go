@@ -70,13 +70,13 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getProductType(client)
+		ret, err := getModel(client)
 		if err != nil {
 			return err
 		}
 		mu.Lock()
 		defer mu.Unlock()
-		info.ProductType = ret
+		info.Model = ret
 		return nil
 	})
 
@@ -136,10 +136,11 @@ func getHostname(client *ssh.Client) (string, error) {
 	return string(ret), err
 }
 
-func getProductType(client *ssh.Client) (machine.MinerType, error) {
-	ret, err := outputRemoteShell(client, `sed -n 2p `+metadataPath)
+func getModel(client *ssh.Client) (machine.Model, error) {
+	cmd := `sed -n 2p ` + metadataPath
+	ret, err := outputRemoteShell(client, cmd)
 	if err != nil {
-		return machine.MinerTypeUnknown, err
+		return machine.ModelUnknown, err
 	}
 	return MinerTypeFromString(string(ret))
 }

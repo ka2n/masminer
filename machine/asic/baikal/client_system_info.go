@@ -127,7 +127,7 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 		mu.Lock()
 		defer mu.Unlock()
 
-		info.ProductType, err = minerTypeFromAPIHWV(stat.HWV.String())
+		info.ProductType, err = modelFromAPIHWV(stat.HWV.String())
 		if err != nil {
 			return err
 		}

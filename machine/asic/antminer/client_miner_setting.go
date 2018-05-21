@@ -14,7 +14,7 @@ func (c *Client) GetMinerSetting() (setting MinerSetting, err error) {
 	if err != nil {
 		return setting, err
 	}
-	return getMinerSetting(c.ssh, info.ProductType)
+	return getMinerSetting(c.ssh, info.Model)
 }
 
 func (c *Client) WriteCGMinerSetting(setting MinerSetting) error {
@@ -37,7 +37,7 @@ EOF
 	return err
 }
 
-func getMinerSetting(client *ssh.Client, minerType machine.MinerType) (setting MinerSetting, err error) {
+func getMinerSetting(client *ssh.Client, minerType machine.Model) (setting MinerSetting, err error) {
 	defaultConf := defaultSetting(minerType)
 	dconfb, err := json.Marshal(defaultConf)
 	if err != nil {
@@ -64,7 +64,7 @@ cat $CONFIG_PATH
 	return
 }
 
-func defaultSetting(mt machine.MinerType) (setting MinerSetting) {
+func defaultSetting(mt machine.Model) (setting MinerSetting) {
 	opt := make(map[string]string)
 	opt["api-allow"] = defaultAPIAllow
 	opt["api-groups"] = defaultAPIGroups
@@ -74,14 +74,14 @@ func defaultSetting(mt machine.MinerType) (setting MinerSetting) {
 	setting.Options = opt
 
 	switch mt {
-	case MinerTypeX3:
+	case ModelX3:
 		setting.Pools = []PoolSetting{
 			{"stratum+tcp://stratum-xmc.antpool.com:5555", "aminerr.1", "x"},
 			{"stratum+tcp://stratum-xmc.antpool.com:443", "aminerr.1", "x"},
 			{"stratum+tcp://stratum-xmc.antpool.com:25", "aminerr.1", "x"},
 		}
 		return
-	case MinerTypeL3P:
+	case ModelL3P:
 		setting.Pools = []PoolSetting{
 			{"stratum+tcp://scrypt.jp.nicehash.com:3333", "383qTNfyvT3cVaiVWZPLsyehR9dW7fRpPK", "x"},
 			{"stratum+tcp://scrypt.eu.nicehash.com:3333", "383qTNfyvT3cVaiVWZPLsyehR9dW7fRpPK", "x"},

@@ -7,10 +7,10 @@ type SystemInfo struct {
 	IPAddr            string
 	MACAddr           string
 	Hostname          string
-	ProductType       machine.MinerType
-	SystemMode        string
+	Model             machine.Model
 	KernelVersion     string
 	FileSystemVersion string
-	CGMinerVersion    string
+	MinerType         string
+	MinerVersion      string
 	HardwareVersions  []string
 }

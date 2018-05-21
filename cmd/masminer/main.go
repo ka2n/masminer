@@ -86,7 +86,7 @@ func watchRigs(rigs []machine.RemoteRig) error {
 
 		fmt.Println("========")
 		for name, r := range result {
-			fmt.Printf("%s - %s [%s], %s\n", name, r.MinerType, r.HardwareVersion, r.FirmwareVersion)
+			fmt.Printf("%s - %s [%s], %s\n", name, r.Model, r.HardwareVersion, r.FirmwareVersion)
 		}
 		fmt.Println("========", time.Now().Sub(now))
 	}
