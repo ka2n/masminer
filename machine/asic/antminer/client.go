@@ -15,18 +15,64 @@ type Client struct {
 	mu         sync.RWMutex
 	ssh        *ssh.Client
 	systemInfo *SystemInfo
+
+	minerType  string
+	configPath string
+
+	ipCMDPath string
+
+	summaryCMD string
+	poolsCMD   string
+	statsCMD   string
+	versionCMD string
+	initdCMD   string
+}
+
+func (c *Client) Setup() error {
+	// Check miner is cgminer or bmminer
+	switch {
+	case runRemoteShell(c.ssh, "which cgminer-api") == nil:
+		c.configPath = minerConfigPath
+		c.summaryCMD = minerAPISummaryCMD
+		c.poolsCMD = minerAPIPoolsCMD
+		c.statsCMD = minerAPIStatsCMD
+		c.versionCMD = minerAPIVersionCMD
+		c.initdCMD = minerInitdCMD
+		c.minerType = "CGMiner"
+	case runRemoteShell(c.ssh, "which bmminer-api") == nil:
+		c.configPath = minerBMMinerConfigPath
+		c.summaryCMD = minerBMMinerAPISummaryCMD
+		c.poolsCMD = minerBMMinerAPIPoolsCMD
+		c.statsCMD = minerBMMinerAPIStatsCMD
+		c.versionCMD = minerBMMinerAPIVersionCMD
+		c.initdCMD = minerBMMinerInitdCMD
+		c.minerType = "BMMiner"
+	default:
+		return fmt.Errorf("cannot detect miner program type")
+	}
+
+	switch {
+	case runRemoteShell(c.ssh, "type /bin/ip") == nil:
+		c.ipCMDPath = "/bin/ip"
+	case runRemoteShell(c.ssh, "type /sbin/ip") == nil:
+		c.ipCMDPath = "/sbin/ip"
+	default:
+		return fmt.Errorf("cannot detect ip command path")
+	}
+
+	return nil
 }
 
 func (c *Client) MineStop(ctx context.Context) error {
-	return runRemoteShell(c.ssh, fmt.Sprintf(minerInitdCMD, "stop"))
+	return runRemoteShell(c.ssh, fmt.Sprintf(c.initdCMD, "stop"))
 }
 
 func (c *Client) MineStart(ctx context.Context) error {
-	return runRemoteShell(c.ssh, fmt.Sprintf(minerInitdCMD, "start"))
+	return runRemoteShell(c.ssh, fmt.Sprintf(c.initdCMD, "start"))
 }
 
 func (c *Client) Restart(ctx context.Context) error {
-	return runRemoteShell(c.ssh, fmt.Sprintf(minerInitdCMD, "restart"))
+	return runRemoteShell(c.ssh, fmt.Sprintf(c.initdCMD, "restart"))
 }
 
 func (c *Client) Reboot(ctx context.Context) error {

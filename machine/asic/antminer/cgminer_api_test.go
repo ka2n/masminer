@@ -18,7 +18,7 @@ func Test_parseCGMinerVersion(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := parseCGMinerVersion(tt.args.in); got != tt.want {
+			if got, _ := parseCGMinerVersion(tt.args.in); got != tt.want {
 				t.Errorf("parseCGMinerOutputToVersion() = %v, want %v", got, tt.want)
 			}
 		})

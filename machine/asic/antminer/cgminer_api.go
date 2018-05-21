@@ -2,6 +2,7 @@ package antminer
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 )
 
@@ -31,14 +32,20 @@ func parseCGMinerStats(in []byte) []map[string]string {
 	return lprops
 }
 
-func parseCGMinerVersion(in []byte) string {
+func parseCGMinerVersion(in []byte) (string, error) {
 	lprops := parseCGMinerStats(bytes.TrimSpace(in))
+	if len(lprops) < 2 {
+		return "", fmt.Errorf("invalid input version")
+	}
 	props := lprops[1]
-	return props["CGMiner"]
+	return props["CGMiner"], nil
 }
 
 func parseHWVersionsFromCGMinerStats(in []byte) ([]string, error) {
 	lprops := parseCGMinerStats(in)
+	if len(lprops) < 3 {
+		return nil, fmt.Errorf("invalid input stats")
+	}
 	props := lprops[2]
 	if _, ok := props["hwv1"]; ok {
 		vs := []string{}
@@ -60,6 +67,9 @@ func parseHWVersionsFromCGMinerStats(in []byte) ([]string, error) {
 func parseDevsFromCGMinerStats(in []byte) (MinerStatsDevs, error) {
 	var devs MinerStatsDevs
 	lprops := parseCGMinerStats(in)
+	if len(lprops) < 3 {
+		return devs, fmt.Errorf("invalid input stats")
+	}
 	props := lprops[2]
 
 	devs.Fans = []string{}
@@ -120,6 +130,9 @@ func parseDevsFromCGMinerStats(in []byte) (MinerStatsDevs, error) {
 
 func parsePoolsFromCGMinerPools(in []byte) ([]MinerStatsPool, error) {
 	lprops := parseCGMinerStats(in)
+	if len(lprops) < 2 {
+		return nil, fmt.Errorf("invalid input pools")
+	}
 	pools := make([]MinerStatsPool, len(lprops[1:]))
 	for i, props := range lprops[1:] {
 		var pool MinerStatsPool

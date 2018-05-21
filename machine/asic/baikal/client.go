@@ -18,6 +18,10 @@ type Client struct {
 	systemInfo *SystemInfo
 }
 
+func (c *Client) Setup() error {
+	return nil
+}
+
 func (c *Client) MineStop(ctx context.Context) error {
 	return runRemoteShell(c.ssh, minerStopCMD)
 }

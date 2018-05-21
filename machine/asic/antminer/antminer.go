@@ -11,6 +11,13 @@ const (
 	minerAPIVersionCMD = "cgminer-api -o version"
 
 	minerInitdCMD = "/etc/init.d/cgminer.sh %s >/dev/null 2>&1"
+
+	minerBMMinerConfigPath    = "/config/bmminer.conf"
+	minerBMMinerAPISummaryCMD = "bmminer-api -o"
+	minerBMMinerAPIPoolsCMD   = "bmminer-api -o pools"
+	minerBMMinerAPIStatsCMD   = "bmminer-api -o stats"
+	minerBMMinerAPIVersionCMD = "bmminer-api -o version"
+	minerBMMinerInitdCMD      = "/etc/init.d/bmminer.sh %s >/dev/null 2>&1"
 )
 
 const (

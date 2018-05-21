@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	"github.com/ka2n/masminer/machine"
 	"github.com/ka2n/masminer/machine/asic/antminer"
 	"github.com/ka2n/masminer/machine/asic/baikal"
@@ -12,6 +14,14 @@ import (
 
 // Dial : get asic client from RemoteRig
 func Dial(r machine.RemoteRig) (Client, error) {
+	c, err := dial(r)
+	if err != nil {
+		return nil, err
+	}
+	return c, c.Setup()
+}
+
+func dial(r machine.RemoteRig) (Client, error) {
 	rw, err := dialByHostname(r.IPAddr, r.Hostname)
 	if err != nil {
 		return nil, err
@@ -36,7 +46,7 @@ func dialByHostname(ipAddr string, hostname string) (Client, error) {
 		var client baikal.Client
 		sc, err := baikal.NewSSHClient(ipAddr)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "baikal client dial failed")
 		}
 		client.SetSSH(sc)
 		return &client, nil
@@ -44,7 +54,7 @@ func dialByHostname(ipAddr string, hostname string) (Client, error) {
 		var client antminer.Client
 		sc, err := antminer.NewSSHClient(ipAddr)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "antminer client dial failed")
 		}
 		client.SetSSH(sc)
 		return &client, nil

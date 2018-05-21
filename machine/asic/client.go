@@ -16,6 +16,7 @@ type Client interface {
 	StatReader
 	SettingReader
 	SettingWriter
+	Setup() error
 }
 
 // Connector handles *ssh.Client

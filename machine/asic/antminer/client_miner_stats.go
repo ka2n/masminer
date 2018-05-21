@@ -1,6 +1,7 @@
 package antminer
 
 import (
+	"fmt"
 	"sync"
 
 	"golang.org/x/crypto/ssh"
@@ -13,7 +14,7 @@ func (c *Client) GetStats() (stats MinerStats, err error) {
 	var mu sync.Mutex
 
 	wg.Go(func() error {
-		ret, err := getMinerStatsSummary(c.ssh)
+		ret, err := getMinerStatsSummary(c.ssh, c.summaryCMD)
 		if err != nil {
 			return err
 		}
@@ -24,7 +25,7 @@ func (c *Client) GetStats() (stats MinerStats, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getMinerStatsPools(c.ssh)
+		ret, err := getMinerStatsPools(c.ssh, c.poolsCMD)
 		if err != nil {
 			return err
 		}
@@ -35,7 +36,7 @@ func (c *Client) GetStats() (stats MinerStats, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getMinerStatsDevs(c.ssh)
+		ret, err := getMinerStatsDevs(c.ssh, c.statsCMD)
 		if err != nil {
 			return err
 		}
@@ -47,8 +48,8 @@ func (c *Client) GetStats() (stats MinerStats, err error) {
 	return stats, wg.Wait()
 }
 
-func getMinerStatsSummary(client *ssh.Client) (summary MinerStatsSummary, err error) {
-	ret, err := outputRemoteShell(client, minerAPISummaryCMD)
+func getMinerStatsSummary(client *ssh.Client, cmd string) (summary MinerStatsSummary, err error) {
+	ret, err := outputRemoteShell(client, cmd)
 	if err != nil {
 		return summary, err
 	}
@@ -58,6 +59,9 @@ func getMinerStatsSummary(client *ssh.Client) (summary MinerStatsSummary, err er
 func parseSummaryFromCGMinerSummary(in []byte) (MinerStatsSummary, error) {
 	var summary MinerStatsSummary
 	lprops := parseCGMinerStats(in)
+	if len(lprops) < 2 {
+		return summary, fmt.Errorf("invalid summary input")
+	}
 	props := lprops[1]
 
 	summary.Elapsed = props["Elapsed"]
@@ -80,16 +84,16 @@ func parseSummaryFromCGMinerSummary(in []byte) (MinerStatsSummary, error) {
 	return summary, nil
 }
 
-func getMinerStatsPools(client *ssh.Client) (pools []MinerStatsPool, err error) {
-	ret, err := outputRemoteShell(client, minerAPIPoolsCMD)
+func getMinerStatsPools(client *ssh.Client, cmd string) (pools []MinerStatsPool, err error) {
+	ret, err := outputRemoteShell(client, cmd)
 	if err != nil {
 		return pools, err
 	}
 	return parsePoolsFromCGMinerPools(ret)
 }
 
-func getMinerStatsDevs(client *ssh.Client) (dev MinerStatsDevs, err error) {
-	ret, err := outputRemoteShell(client, minerAPIStatsCMD)
+func getMinerStatsDevs(client *ssh.Client, cmd string) (dev MinerStatsDevs, err error) {
+	ret, err := outputRemoteShell(client, cmd)
 	if err != nil {
 		return dev, err
 	}
