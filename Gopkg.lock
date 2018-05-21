@@ -18,9 +18,27 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/ka2n/baikalver"
+  packages = ["."]
+  revision = "d558acc085ed5ea995c4d3d835241afbbaf46910"
+
+[[projects]]
+  name = "github.com/miekg/dns"
+  packages = ["."]
+  revision = "e57bf427e68187a27e22adceac868350d7a7079b"
+  version = "v1.0.7"
+
+[[projects]]
+  branch = "master"
   name = "github.com/mostlygeek/arp"
   packages = ["."]
   revision = "541a2129847a674f55f3cb2915279009e7b7bcb1"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/shirou/gopsutil"
@@ -28,14 +46,43 @@
     "cpu",
     "internal/common"
   ]
-  revision = "5776ff9c7c5d063d574ef53d740f75c68b448e53"
-  version = "v2.18.02"
+  revision = "c95755e4bcd7a62bb8bd33f3a597a7c7f35e2cf3"
+  version = "v2.18.04"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = [
+    "curve25519",
+    "ed25519",
+    "ed25519/internal/edwards25519",
+    "internal/chacha20",
+    "poly1305",
+    "ssh"
+  ]
+  revision = "1a580b3eff7814fc9b40602fd35256c63b50f491"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = [
+    "bpf",
+    "context",
+    "internal/iana",
+    "internal/socket",
+    "ipv4",
+    "ipv6"
+  ]
+  revision = "57065200b4b034a1c8ad54ff77069408c2218ae6"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sync"
-  packages = ["singleflight"]
-  revision = "fd80eb99c8f653c847d294a001bdf2a3a6f768f5"
+  packages = [
+    "errgroup",
+    "singleflight"
+  ]
+  revision = "1d60e4601c6fd243af51cc01ddf169918a5407ca"
 
 [[projects]]
   branch = "master"
@@ -44,11 +91,11 @@
     "unix",
     "windows"
   ]
-  revision = "7dca6fe1f43775aa6d1334576870ff63f978f539"
+  revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c807d03376134c08aeed05673bc9387cdfb9ccf6a32dda3a9f7902a56e8b869b"
+  inputs-digest = "5f90a8fff0278fd53396ae2c20eb03816d9b3e4a20ad1f8fce10a481ada1c118"
   solver-name = "gps-cdcl"
   solver-version = 1
