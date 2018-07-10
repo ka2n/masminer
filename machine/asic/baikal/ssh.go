@@ -41,7 +41,6 @@ func runRemoteShell(client *ssh.Client, in string) error {
 		return err
 	}
 	defer sess.Close()
-	sess.Stderr = os.Stderr
 	return sess.Run(in)
 }
 
