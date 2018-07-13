@@ -87,8 +87,8 @@ func watchRigs(rigs []machine.RemoteRig) error {
 
 		fmt.Println("========")
 		for name, r := range result {
-			btEpoch, _ := strconv.Atoi(r.BootTime)
-			bt := time.Unix(int64(btEpoch), 0)
+			btUptime, _ := strconv.Atoi(r.UptimeSeconds)
+			bt := time.Unix(now.Unix()-int64(btUptime), 0)
 			fmt.Printf("%s - %s [%s], %s, %s(%s)\n", name, r.Model, r.HardwareVersion, r.FirmwareVersion, bt, now.Sub(bt))
 		}
 		fmt.Println("========", time.Now().Sub(now))

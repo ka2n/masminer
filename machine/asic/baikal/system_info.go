@@ -12,7 +12,7 @@ type SystemInfo struct {
 	KernelVersion     string
 	FileSystemVersion string
 
-	BootTime string
+	UptimeSeconds string
 
 	ProductType      machine.Model
 	ProductVersion   string

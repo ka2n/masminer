@@ -69,7 +69,7 @@ func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 	info.FirmwareVersion = si.FileSystemVersion
 	info.MinerVersion = si.MinerVersion
 	info.Algos = Algos(si.ProductType)
-	info.BootTime = si.BootTime
+	info.UptimeSeconds = si.UptimeSeconds
 
 	return info, nil
 }

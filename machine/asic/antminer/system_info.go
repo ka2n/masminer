@@ -10,7 +10,7 @@ type SystemInfo struct {
 	KernelVersion     string
 	FileSystemVersion string
 
-	BootTime string
+	UptimeSeconds string
 
 	Model            machine.Model
 	MinerType        string
