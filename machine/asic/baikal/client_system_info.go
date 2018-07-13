@@ -92,6 +92,17 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
+		ret, err := getBootTime(client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.BootTime = ret
+		return nil
+	})
+
+	wg.Go(func() error {
 		ret, err := outputMinerRPC(client, "stats+version", "")
 		if err != nil {
 			return err
@@ -158,6 +169,12 @@ func getKernelVersion(client *ssh.Client) (string, error) {
 
 func getFileSystemVersion(client *ssh.Client) (string, error) {
 	ret, err := outputRemoteShell(client, `uname -v`)
+	return string(bytes.TrimSpace(ret)), err
+}
+
+func getBootTime(client *ssh.Client) (string, error) {
+	cmd := "expr `date +%s` - `cut -d \".\" -f 1 /proc/uptime`"
+	ret, err := outputRemoteShell(client, cmd)
 	return string(bytes.TrimSpace(ret)), err
 }
 

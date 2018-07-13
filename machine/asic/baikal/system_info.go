@@ -4,17 +4,18 @@ import (
 	"github.com/ka2n/masminer/machine"
 )
 
+// SystemInfo : Generic system info
 type SystemInfo struct {
-	IPAddr        string
-	MACAddr       string
-	Hostname      string
-	KernelVersion string
-
-	ProductType    machine.Model
-	ProductVersion string
-
+	IPAddr            string
+	MACAddr           string
+	Hostname          string
+	KernelVersion     string
 	FileSystemVersion string
 
+	BootTime string
+
+	ProductType      machine.Model
+	ProductVersion   string
 	MinerDescription string
 	MinerVersion     string
 	APIVersion       string

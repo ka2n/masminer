@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -73,20 +74,22 @@ func watchRigs(rigs []machine.RemoteRig) error {
 					panic(err)
 				}
 				defer client.Close()
-				stat, err := client.RigInfo(ctx)
+				info, err := client.RigInfo(ctx)
 				if err != nil {
 					panic(err)
 				}
 				mu.Lock()
 				defer mu.Unlock()
-				result[stat.Rig.Name] = stat
+				result[info.Rig.Name] = info
 			}()
 		}
 		wg.Wait()
 
 		fmt.Println("========")
 		for name, r := range result {
-			fmt.Printf("%s - %s [%s], %s\n", name, r.Model, r.HardwareVersion, r.FirmwareVersion)
+			btEpoch, _ := strconv.Atoi(r.BootTime)
+			bt := time.Unix(int64(btEpoch), 0)
+			fmt.Printf("%s - %s [%s], %s, %s(%s)\n", name, r.Model, r.HardwareVersion, r.FirmwareVersion, bt, now.Sub(bt))
 		}
 		fmt.Println("========", time.Now().Sub(now))
 	}

@@ -18,4 +18,5 @@ type RigInfo struct {
 	MinerType       string
 	MinerVersion    string
 	Algos           []string
+	BootTime        string
 }

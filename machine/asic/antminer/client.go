@@ -106,6 +106,7 @@ func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 	info.MinerVersion = si.MinerVersion
 	info.MinerType = si.MinerType
 	info.Algos = Algos(si.Model)
+	info.BootTime = si.BootTime
 	return info, nil
 }
 
