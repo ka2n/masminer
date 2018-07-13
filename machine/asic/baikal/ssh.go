@@ -1,7 +1,6 @@
 package baikal
 
 import (
-	"os"
 	"time"
 
 	"github.com/ka2n/masminer/cgminerproxy"
