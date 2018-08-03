@@ -1,12 +1,17 @@
 package baikal
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 )
 
 func (c *Client) GetStats() (stat MinerStats, err error) {
-	ret, err := outputMinerRPC(c.ssh, "devs+pools+stats+summary", "")
+	return c.GetStatsContext(nil)
+}
+
+func (c *Client) GetStatsContext(ctx context.Context) (stat MinerStats, err error) {
+	ret, err := outputMinerRPC(ctx, c.ssh, "devs+pools+stats+summary", "")
 	if err != nil {
 		return stat, err
 	}

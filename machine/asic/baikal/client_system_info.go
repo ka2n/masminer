@@ -2,6 +2,7 @@ package baikal
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"sync"
@@ -12,6 +13,10 @@ import (
 )
 
 func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
+	return c.GetSystemInfoContext(nil)
+}
+
+func (c *Client) GetSystemInfoContext(ctx context.Context) (info SystemInfo, err error) {
 	// Read from cache
 	c.mu.RLock()
 	if c.systemInfo != nil {
@@ -20,7 +25,7 @@ func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
 	}
 	c.mu.RUnlock()
 
-	info, err = getSystemInfo(c.ssh)
+	info, err = getSystemInfo(ctx, c.ssh)
 	if err != nil {
 		return info, err
 	}
@@ -32,12 +37,12 @@ func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
 	return info, nil
 }
 
-func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
+func getSystemInfo(ctx context.Context, client *ssh.Client) (info SystemInfo, err error) {
 	var wg errgroup.Group
 	var mu sync.Mutex
 
 	wg.Go(func() error {
-		ret, err := getMacAddr(client)
+		ret, err := getMacAddr(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -48,7 +53,7 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getIPAddr(client)
+		ret, err := getIPAddr(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -59,7 +64,7 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getHostname(client)
+		ret, err := getHostname(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -70,7 +75,7 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getKernelVersion(client)
+		ret, err := getKernelVersion(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -81,7 +86,7 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getFileSystemVersion(client)
+		ret, err := getFileSystemVersion(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -92,7 +97,7 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getUptimeSeconds(client)
+		ret, err := getUptimeSeconds(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -103,7 +108,7 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := outputMinerRPC(client, "stats+version", "")
+		ret, err := outputMinerRPC(ctx, client, "stats+version", "")
 		if err != nil {
 			return err
 		}
@@ -152,34 +157,34 @@ func getSystemInfo(client *ssh.Client) (info SystemInfo, err error) {
 	return info, wg.Wait()
 }
 
-func getMacAddr(client *ssh.Client) (string, error) {
-	ret, err := outputRemoteShell(client, `ip link show eth0 | grep -o 'link/.*' | cut -d' ' -f2`)
+func getMacAddr(ctx context.Context, client *ssh.Client) (string, error) {
+	ret, err := outputRemoteShell(ctx, client, `ip link show eth0 | grep -o 'link/.*' | cut -d' ' -f2`)
 	return string(bytes.TrimSpace(ret)), err
 }
 
-func getHostname(client *ssh.Client) (string, error) {
-	ret, err := outputRemoteShell(client, `hostname`)
+func getHostname(ctx context.Context, client *ssh.Client) (string, error) {
+	ret, err := outputRemoteShell(ctx, client, `hostname`)
 	return string(ret), err
 }
 
-func getKernelVersion(client *ssh.Client) (string, error) {
-	ret, err := outputRemoteShell(client, `uname -srv`)
+func getKernelVersion(ctx context.Context, client *ssh.Client) (string, error) {
+	ret, err := outputRemoteShell(ctx, client, `uname -srv`)
 	return string(bytes.TrimSpace(ret)), err
 }
 
-func getFileSystemVersion(client *ssh.Client) (string, error) {
-	ret, err := outputRemoteShell(client, `uname -v`)
+func getFileSystemVersion(ctx context.Context, client *ssh.Client) (string, error) {
+	ret, err := outputRemoteShell(ctx, client, `uname -v`)
 	return string(bytes.TrimSpace(ret)), err
 }
 
-func getUptimeSeconds(client *ssh.Client) (string, error) {
+func getUptimeSeconds(ctx context.Context, client *ssh.Client) (string, error) {
 	cmd := "cut -d \".\" -f 1 /proc/uptime"
-	ret, err := outputRemoteShell(client, cmd)
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	return string(bytes.TrimSpace(ret)), err
 }
 
-func getIPAddr(client *ssh.Client) (string, error) {
-	ret, err := outputRemoteShell(client, `ip a show eth0 | grep -o 'inet\s.*' | cut -d' ' -f2`)
+func getIPAddr(ctx context.Context, client *ssh.Client) (string, error) {
+	ret, err := outputRemoteShell(ctx, client, `ip a show eth0 | grep -o 'inet\s.*' | cut -d' ' -f2`)
 	if err != nil {
 		return string(ret), err
 	}

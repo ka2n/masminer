@@ -23,15 +23,15 @@ func (c *Client) Setup() error {
 }
 
 func (c *Client) MineStop(ctx context.Context) error {
-	return runRemoteShell(c.ssh, minerStopCMD)
+	return runRemoteShell(ctx, c.ssh, minerStopCMD)
 }
 
 func (c *Client) MineStart(ctx context.Context) error {
-	return runRemoteShell(c.ssh, minerStartCMD)
+	return runRemoteShell(ctx, c.ssh, minerStartCMD)
 }
 
 func (c *Client) Restart(ctx context.Context) error {
-	_, err := outputMinerRPC(c.ssh, "restart", "")
+	_, err := outputMinerRPC(ctx, c.ssh, "restart", "")
 	if err != nil {
 		return err
 	}
@@ -39,7 +39,7 @@ func (c *Client) Restart(ctx context.Context) error {
 }
 
 func (c *Client) Reboot(ctx context.Context) error {
-	return runRemoteShell(c.ssh, "shutdown -r +5")
+	return runRemoteShell(ctx, c.ssh, "shutdown -r +5")
 }
 
 func (c *Client) SetSSH(client *ssh.Client) {
@@ -54,7 +54,7 @@ func (c *Client) Close() error {
 
 func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 	var info machine.RigInfo
-	si, err := c.GetSystemInfo()
+	si, err := c.GetSystemInfoContext(ctx)
 	if err != nil {
 		return info, err
 	}
@@ -77,7 +77,7 @@ func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 func (c *Client) RigStat(ctx context.Context) (machine.RigStat, error) {
 	var stat machine.RigStat
 
-	ms, err := c.GetStats()
+	ms, err := c.GetStatsContext(ctx)
 	if err != nil {
 		return stat, err
 	}
@@ -137,12 +137,12 @@ func (c *Client) RigStat(ctx context.Context) (machine.RigStat, error) {
 func (c *Client) MinerSetting(ctx context.Context) (machine.MinerSetting, error) {
 	var s machine.MinerSetting
 
-	ms, err := getMinerSetting(c.ssh)
+	ms, err := getMinerSetting(ctx, c.ssh)
 	if err != nil {
 		return s, err
 	}
 
-	ps, err := getMinerPools(c.ssh)
+	ps, err := getMinerPools(ctx, c.ssh)
 	if err != nil {
 		return s, err
 	}
@@ -158,5 +158,5 @@ func (c *Client) SetMinerSetting(ctx context.Context, setting machine.MinerSetti
 		return err
 	}
 
-	return writeMinerAndPoolSetting(c.ssh, ms, ps)
+	return writeMinerAndPoolSetting(ctx, c.ssh, ms, ps)
 }

@@ -29,9 +29,13 @@ type Client struct {
 }
 
 func (c *Client) Setup() error {
+	return c.SetupContext(nil)
+}
+
+func (c *Client) SetupContext(ctx context.Context) error {
 	// Check miner is cgminer or bmminer
 	switch {
-	case runRemoteShell(c.ssh, "which cgminer-api") == nil:
+	case runRemoteShell(ctx, c.ssh, "which cgminer-api") == nil:
 		c.configPath = minerConfigPath
 		c.summaryCMD = minerAPISummaryCMD
 		c.poolsCMD = minerAPIPoolsCMD
@@ -39,7 +43,7 @@ func (c *Client) Setup() error {
 		c.versionCMD = minerAPIVersionCMD
 		c.initdCMD = minerInitdCMD
 		c.minerType = "CGMiner"
-	case runRemoteShell(c.ssh, "which bmminer-api") == nil:
+	case runRemoteShell(ctx, c.ssh, "which bmminer-api") == nil:
 		c.configPath = minerBMMinerConfigPath
 		c.summaryCMD = minerBMMinerAPISummaryCMD
 		c.poolsCMD = minerBMMinerAPIPoolsCMD
@@ -52,9 +56,9 @@ func (c *Client) Setup() error {
 	}
 
 	switch {
-	case runRemoteShell(c.ssh, "type /bin/ip") == nil:
+	case runRemoteShell(ctx, c.ssh, "type /bin/ip") == nil:
 		c.ipCMDPath = "/bin/ip"
-	case runRemoteShell(c.ssh, "type /sbin/ip") == nil:
+	case runRemoteShell(ctx, c.ssh, "type /sbin/ip") == nil:
 		c.ipCMDPath = "/sbin/ip"
 	default:
 		return fmt.Errorf("cannot detect ip command path")
@@ -64,19 +68,19 @@ func (c *Client) Setup() error {
 }
 
 func (c *Client) MineStop(ctx context.Context) error {
-	return runRemoteShell(c.ssh, fmt.Sprintf(c.initdCMD, "stop"))
+	return runRemoteShell(ctx, c.ssh, fmt.Sprintf(c.initdCMD, "stop"))
 }
 
 func (c *Client) MineStart(ctx context.Context) error {
-	return runRemoteShell(c.ssh, fmt.Sprintf(c.initdCMD, "start"))
+	return runRemoteShell(ctx, c.ssh, fmt.Sprintf(c.initdCMD, "start"))
 }
 
 func (c *Client) Restart(ctx context.Context) error {
-	return runRemoteShell(c.ssh, fmt.Sprintf(c.initdCMD, "restart"))
+	return runRemoteShell(ctx, c.ssh, fmt.Sprintf(c.initdCMD, "restart"))
 }
 
 func (c *Client) Reboot(ctx context.Context) error {
-	return runRemoteShell(c.ssh, "shutdown -r +5")
+	return runRemoteShell(ctx, c.ssh, "shutdown -r +5")
 }
 
 func (c *Client) SetSSH(client *ssh.Client) {
@@ -91,7 +95,7 @@ func (c *Client) Close() error {
 
 func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 	var info machine.RigInfo
-	si, err := c.GetSystemInfo()
+	si, err := c.GetSystemInfoContext(ctx)
 	if err != nil {
 		return info, err
 	}
@@ -113,7 +117,7 @@ func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 func (c *Client) RigStat(ctx context.Context) (machine.RigStat, error) {
 	var stat machine.RigStat
 
-	ms, err := c.GetStats()
+	ms, err := c.GetStatsContext(ctx)
 	if err != nil {
 		return stat, err
 	}
@@ -162,7 +166,7 @@ func (c *Client) RigStat(ctx context.Context) (machine.RigStat, error) {
 }
 
 func (c *Client) MinerSetting(ctx context.Context) (machine.MinerSetting, error) {
-	ms, err := c.GetMinerSetting()
+	ms, err := c.GetMinerSettingContext(ctx)
 	if err != nil {
 		return machine.MinerSetting{}, err
 	}
@@ -174,5 +178,5 @@ func (c *Client) SetMinerSetting(ctx context.Context, setting machine.MinerSetti
 	if err := ms.LoadCommonMinerSetting(setting); err != nil {
 		return err
 	}
-	return c.WriteCGMinerSetting(ms)
+	return c.WriteCGMinerSettingContext(ctx, ms)
 }
