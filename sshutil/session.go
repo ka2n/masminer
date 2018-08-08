@@ -19,8 +19,8 @@ func (s Session) OutputContext(ctx context.Context, cmd string) (output []byte, 
 
 	rchan := make(chan struct{})
 	go func() {
+		defer close(rchan)
 		output, err = s.Session.Output(cmd)
-		rchan <- struct{}{}
 	}()
 
 	select {
@@ -39,8 +39,8 @@ func (s Session) RunContext(ctx context.Context, cmd string) (err error) {
 
 	rchan := make(chan struct{})
 	go func() {
+		defer close(rchan)
 		err = s.Session.Run(cmd)
-		rchan <- struct{}{}
 	}()
 
 	select {

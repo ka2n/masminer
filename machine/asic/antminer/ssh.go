@@ -55,8 +55,8 @@ func outputMinerRPC(ctx context.Context, client *ssh.Client, command, argument s
 
 	done := make(chan struct{})
 	go func() {
+		defer close(done)
 		out, err = outputMinerRPCInner(client, command, argument)
-		done <- struct{}{}
 	}()
 
 	select {
