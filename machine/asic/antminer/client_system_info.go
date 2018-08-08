@@ -2,6 +2,7 @@ package antminer
 
 import (
 	"bytes"
+	"context"
 	"sync"
 
 	"github.com/ka2n/masminer/machine"
@@ -12,6 +13,11 @@ import (
 
 // GetSystemInfo returns SystemInfo
 func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
+	return c.GetSystemInfoContext(nil)
+}
+
+// GetSystemInfoContext returns SystemInfo
+func (c *Client) GetSystemInfoContext(ctx context.Context) (info SystemInfo, err error) {
 	// Read from cache
 	c.mu.RLock()
 	if c.systemInfo != nil {
@@ -20,7 +26,7 @@ func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
 	}
 	c.mu.RUnlock()
 
-	info, err = c.getSystemInfo()
+	info, err = c.getSystemInfo(ctx)
 	if err != nil {
 		return info, err
 	}
@@ -32,14 +38,14 @@ func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
 	return info, nil
 }
 
-func (c *Client) getSystemInfo() (info SystemInfo, err error) {
+func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error) {
 	var wg errgroup.Group
 	var mu sync.Mutex
 	client := c.ssh
 	info.MinerType = c.minerType
 
 	wg.Go(func() error {
-		ret, err := getMacAddr(client, c.ipCMDPath)
+		ret, err := getMacAddr(ctx, client, c.ipCMDPath)
 		if err != nil {
 			return err
 		}
@@ -50,7 +56,7 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getIPAddr(client, c.ipCMDPath)
+		ret, err := getIPAddr(ctx, client, c.ipCMDPath)
 		if err != nil {
 			return err
 		}
@@ -61,7 +67,7 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getHostname(client)
+		ret, err := getHostname(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -72,7 +78,7 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getModel(client)
+		ret, err := getModel(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -83,7 +89,7 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getKernelVersion(client)
+		ret, err := getKernelVersion(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -94,7 +100,7 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getFileSystemVersion(client)
+		ret, err := getFileSystemVersion(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -105,7 +111,7 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getUptimeSeconds(client)
+		ret, err := getUptimeSeconds(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -116,7 +122,7 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getMinerVersion(client, c.versionCMD)
+		ret, err := getMinerVersion(ctx, client, c.versionCMD)
 		if err != nil {
 			return err
 		}
@@ -127,7 +133,7 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	})
 
 	wg.Go(func() error {
-		ret, err := getHardwareVersions(client, c.statsCMD)
+		ret, err := getHardwareVersions(ctx, client, c.statsCMD)
 		if err != nil {
 			return err
 		}
@@ -139,63 +145,63 @@ func (c *Client) getSystemInfo() (info SystemInfo, err error) {
 	return info, wg.Wait()
 }
 
-func getMacAddr(client *ssh.Client, ipCMD string) (string, error) {
+func getMacAddr(ctx context.Context, client *ssh.Client, ipCMD string) (string, error) {
 	cmd := ipCMD + ` link show eth0 | grep -o 'link/.*' | cut -d' ' -f2`
-	ret, err := outputRemoteShell(client, cmd)
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	return string(bytes.TrimSpace(ret)), err
 }
 
-func getHostname(client *ssh.Client) (string, error) {
-	ret, err := outputRemoteShell(client, `hostname`)
+func getHostname(ctx context.Context, client *ssh.Client) (string, error) {
+	ret, err := outputRemoteShell(ctx, client, `hostname`)
 	return string(ret), err
 }
 
-func getModel(client *ssh.Client) (machine.Model, error) {
+func getModel(ctx context.Context, client *ssh.Client) (machine.Model, error) {
 	cmd := `sed -n 2p ` + metadataPath
-	ret, err := outputRemoteShell(client, cmd)
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return machine.ModelUnknown, err
 	}
 	return MinerTypeFromString(string(ret))
 }
 
-func getKernelVersion(client *ssh.Client) (string, error) {
+func getKernelVersion(ctx context.Context, client *ssh.Client) (string, error) {
 	cmd := `uname -srv`
-	ret, err := outputRemoteShell(client, cmd)
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	return string(bytes.TrimSpace(ret)), err
 }
 
-func getUptimeSeconds(client *ssh.Client) (string, error) {
+func getUptimeSeconds(ctx context.Context, client *ssh.Client) (string, error) {
 	cmd := "cut -d \".\" -f 1 /proc/uptime"
-	ret, err := outputRemoteShell(client, cmd)
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	return string(bytes.TrimSpace(ret)), err
 }
 
-func getFileSystemVersion(client *ssh.Client) (string, error) {
+func getFileSystemVersion(ctx context.Context, client *ssh.Client) (string, error) {
 	cmd := `sed -n 1p ` + metadataPath
-	ret, err := outputRemoteShell(client, cmd)
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	return string(bytes.TrimSpace(ret)), err
 }
 
-func getMinerVersion(client *ssh.Client, cmd string) (string, error) {
-	ret, err := outputRemoteShell(client, cmd)
+func getMinerVersion(ctx context.Context, client *ssh.Client, cmd string) (string, error) {
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return "", err
 	}
 	return parseCGMinerVersion(ret)
 }
 
-func getHardwareVersions(client *ssh.Client, cmd string) ([]string, error) {
-	ret, err := outputRemoteShell(client, cmd)
+func getHardwareVersions(ctx context.Context, client *ssh.Client, cmd string) ([]string, error) {
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return nil, err
 	}
 	return parseHWVersionsFromCGMinerStats(bytes.TrimSpace(ret))
 }
 
-func getIPAddr(client *ssh.Client, ipCMD string) (string, error) {
+func getIPAddr(ctx context.Context, client *ssh.Client, ipCMD string) (string, error) {
 	cmd := ipCMD + ` addr show eth0 | grep -o 'inet\s.*' | cut -d' ' -f2`
-	ret, err := outputRemoteShell(client, cmd)
+	ret, err := outputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return string(ret), err
 	}

@@ -1,6 +1,7 @@
 package baikal
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -60,8 +61,8 @@ type MinerOptionsEntry struct {
 	Value string `json:"value"`
 }
 
-func getMinerSetting(client *ssh.Client) (setting MinerSetting, err error) {
-	output, err := outputRemoteShell(client, `cat `+minerOptionsPath)
+func getMinerSetting(ctx context.Context, client *ssh.Client) (setting MinerSetting, err error) {
+	output, err := outputRemoteShell(ctx, client, `cat `+minerOptionsPath)
 	if err != nil {
 		return setting, err
 	}
@@ -73,8 +74,8 @@ func getMinerSetting(client *ssh.Client) (setting MinerSetting, err error) {
 	return setting, nil
 }
 
-func getMinerPools(client *ssh.Client) (pools []PoolSetting, err error) {
-	output, err := outputRemoteShell(client, `cat `+minerPoolsPath)
+func getMinerPools(ctx context.Context, client *ssh.Client) (pools []PoolSetting, err error) {
+	output, err := outputRemoteShell(ctx, client, `cat `+minerPoolsPath)
 	if err != nil {
 		return pools, err
 	}
@@ -98,7 +99,7 @@ func mergeMinerAndPoolSetting(m MinerSetting, ps []PoolSetting) map[string]inter
 	return minerConf
 }
 
-func writeMinerAndPoolSetting(client *ssh.Client, m MinerSetting, ps []PoolSetting) error {
+func writeMinerAndPoolSetting(ctx context.Context, client *ssh.Client, m MinerSetting, ps []PoolSetting) error {
 	mc := mergeMinerAndPoolSetting(m, ps)
 	const indent = "    "
 
@@ -117,7 +118,7 @@ func writeMinerAndPoolSetting(client *ssh.Client, m MinerSetting, ps []PoolSetti
 		return err
 	}
 
-	err = runRemoteShell(client, fmt.Sprintf(`
+	err = runRemoteShell(ctx, client, fmt.Sprintf(`
 set -ex
 MINER_CONF_PATH=%s
 MINER_POOLS_PATH=%s
@@ -145,7 +146,7 @@ sudo chown www-data $MINER_OPTIONS_PATH
 		return err
 	}
 
-	_, err = outputMinerRPC(client, "restart", "")
+	_, err = outputMinerRPC(ctx, client, "restart", "")
 	return err
 }
 

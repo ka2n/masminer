@@ -1,6 +1,7 @@
 package antminer
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -10,19 +11,24 @@ import (
 
 // GetMinerSetting returns MinerSetting or create with default setting
 func (c *Client) GetMinerSetting() (setting MinerSetting, err error) {
+	return c.GetMinerSettingContext(nil)
+}
+
+// GetMinerSettingContext returns MinerSetting or create with default setting
+func (c *Client) GetMinerSettingContext(ctx context.Context) (setting MinerSetting, err error) {
 	info, err := c.GetSystemInfo()
 	if err != nil {
 		return setting, err
 	}
-	return getMinerSetting(c.ssh, info.Model)
+	return getMinerSetting(ctx, c.ssh, info.Model)
 }
 
-func (c *Client) WriteCGMinerSetting(setting MinerSetting) error {
+func (c *Client) WriteCGMinerSettingContext(ctx context.Context, setting MinerSetting) error {
 	buf, err := json.Marshal(setting)
 	if err != nil {
 		return err
 	}
-	err = runRemoteShell(c.ssh, fmt.Sprintf(`
+	err = runRemoteShell(ctx, c.ssh, fmt.Sprintf(`
 set -ex
 CONFIG_PATH=%s
 cat <<'EOF' > $CONFIG_PATH
@@ -33,18 +39,22 @@ EOF
 		return err
 	}
 
-	_, err = outputMinerRPC(c.ssh, "restart", "")
+	_, err = outputMinerRPC(ctx, c.ssh, "restart", "")
 	return err
 }
 
-func getMinerSetting(client *ssh.Client, minerType machine.Model) (setting MinerSetting, err error) {
+func (c *Client) WriteCGMinerSetting(setting MinerSetting) error {
+	return c.WriteCGMinerSettingContext(nil, setting)
+}
+
+func getMinerSetting(ctx context.Context, client *ssh.Client, minerType machine.Model) (setting MinerSetting, err error) {
 	defaultConf := defaultSetting(minerType)
 	dconfb, err := json.Marshal(defaultConf)
 	if err != nil {
 		panic(err)
 	}
 
-	output, err := outputRemoteShell(client, fmt.Sprintf(`
+	output, err := outputRemoteShell(ctx, client, fmt.Sprintf(`
 set -ex
 CONFIG_PATH=%s
 if [ ! -f $CONFIG_PATH ] ; then
