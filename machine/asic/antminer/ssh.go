@@ -9,6 +9,10 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+var (
+	sshDialer sshutil.TimeoutDialer
+)
+
 // NewSSHClient returns *ssh.Client with default setting
 func NewSSHClient(host string) (*ssh.Client, error) {
 	return NewSSHClientTimeout(host, 0)
@@ -24,7 +28,7 @@ func NewSSHClientTimeout(host string, timeout time.Duration) (*ssh.Client, error
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 		Timeout:         timeout,
 	}
-	return ssh.Dial("tcp", host+":22", cfg)
+	return sshDialer.DialTimeout("tcp", host+":22", cfg, timeout)
 }
 
 func outputRemoteShell(ctx context.Context, client *ssh.Client, in string) ([]byte, error) {
