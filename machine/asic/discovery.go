@@ -11,6 +11,7 @@ import (
 	"github.com/miekg/dns"
 
 	"github.com/ka2n/masminer/machine"
+	nettool "github.com/ka2n/masminer/net"
 	"github.com/ka2n/masminer/netscan"
 	"github.com/mostlygeek/arp"
 )
@@ -30,7 +31,7 @@ func DiscoverByIPScan(ctx context.Context, networks []string, portBegin int, por
 			mac := arp.Search(r.IP)
 
 			var rig machine.RemoteRig
-			if mac != "" {
+			if nettool.ValidateMAC(mac) {
 				rig.Name = machine.ShortName(mac)
 				rig.MACAddr = mac
 			}
@@ -94,10 +95,10 @@ func DiscoverByMCast(ctx context.Context, mcastCode string, mcastAddr string, mc
 				if len(ans) > 3 && len(ans[3]) > 0 {
 					mac = ans[3]
 				}
-				if mac == "" {
-					continue
+				if nettool.ValidateMAC(mac) {
+					rig.Name = machine.ShortName(mac)
+					rig.MACAddr = mac
 				}
-				rig.Name = mac
 				rig.IPAddr = src.IP.String()
 				rig.Hostname = netscan.LookupHostname(dnsClient, rig.IPAddr)
 				handler(rig)
