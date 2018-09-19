@@ -26,6 +26,7 @@ func DiscoverByIPScan(ctx context.Context, networks []string, portBegin int, por
 		if err != nil {
 			continue
 		}
+		arp.CacheUpdate()
 		for _, r := range ret {
 			// Collect mac addr from ARP table
 			mac := arp.Search(r.IP)
@@ -68,6 +69,8 @@ func DiscoverByMCast(ctx context.Context, mcastCode string, mcastAddr string, mc
 		return err
 	}
 	defer conn.Close()
+
+	arp.CacheUpdate()
 
 	deadline := time.Now().Add(timeout)
 	conn.SetReadBuffer(bufSize)
