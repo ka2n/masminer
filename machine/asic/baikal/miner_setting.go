@@ -7,6 +7,7 @@ import (
 	"sort"
 
 	"github.com/ka2n/masminer/machine"
+	"github.com/ka2n/masminer/machine/asic/base"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -62,7 +63,7 @@ type MinerOptionsEntry struct {
 }
 
 func getMinerSetting(ctx context.Context, client *ssh.Client) (setting MinerSetting, err error) {
-	output, err := outputRemoteShell(ctx, client, `cat `+minerOptionsPath)
+	output, err := base.OutputRemoteShell(ctx, client, `cat `+minerOptionsPath)
 	if err != nil {
 		return setting, err
 	}
@@ -75,7 +76,7 @@ func getMinerSetting(ctx context.Context, client *ssh.Client) (setting MinerSett
 }
 
 func getMinerPools(ctx context.Context, client *ssh.Client) (pools []PoolSetting, err error) {
-	output, err := outputRemoteShell(ctx, client, `cat `+minerPoolsPath)
+	output, err := base.OutputRemoteShell(ctx, client, `cat `+minerPoolsPath)
 	if err != nil {
 		return pools, err
 	}
@@ -118,7 +119,7 @@ func writeMinerAndPoolSetting(ctx context.Context, client *ssh.Client, m MinerSe
 		return err
 	}
 
-	err = runRemoteShell(ctx, client, fmt.Sprintf(`
+	err = base.RunRemoteShell(ctx, client, fmt.Sprintf(`
 set -ex
 MINER_CONF_PATH=%s
 MINER_POOLS_PATH=%s
@@ -146,7 +147,7 @@ sudo chown www-data $MINER_OPTIONS_PATH
 		return err
 	}
 
-	_, err = outputMinerRPC(ctx, client, "restart", "")
+	_, err = base.OutputMinerRPC(ctx, client, "restart", "")
 	return err
 }
 

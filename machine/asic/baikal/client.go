@@ -4,34 +4,30 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"sync"
+	"time"
 
 	"github.com/ka2n/masminer/machine"
+	"github.com/ka2n/masminer/machine/asic/base"
 
 	"golang.org/x/crypto/ssh"
 )
 
 type Client struct {
-	ssh *ssh.Client
+	base.Client
 
-	mu         sync.RWMutex
 	systemInfo *SystemInfo
 }
 
-func (c *Client) Setup() error {
-	return nil
-}
-
 func (c *Client) MineStop(ctx context.Context) error {
-	return runRemoteShell(ctx, c.ssh, minerStopCMD)
+	return base.RunRemoteShell(ctx, c.SSH, minerStopCMD)
 }
 
 func (c *Client) MineStart(ctx context.Context) error {
-	return runRemoteShell(ctx, c.ssh, minerStartCMD)
+	return base.RunRemoteShell(ctx, c.SSH, minerStartCMD)
 }
 
 func (c *Client) Restart(ctx context.Context) error {
-	_, err := outputMinerRPC(ctx, c.ssh, "restart", "")
+	_, err := base.OutputMinerRPC(ctx, c.SSH, "restart", "")
 	if err != nil {
 		return err
 	}
@@ -39,17 +35,18 @@ func (c *Client) Restart(ctx context.Context) error {
 }
 
 func (c *Client) Reboot(ctx context.Context) error {
-	return runRemoteShell(ctx, c.ssh, "shutdown -r +5")
+	return base.RunRemoteShell(ctx, c.SSH, "shutdown -r +5")
 }
 
-func (c *Client) SetSSH(client *ssh.Client) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.ssh = client
-}
-
-func (c *Client) Close() error {
-	return c.ssh.Close()
+func (c *Client) SSHConfig(host string, timeout time.Duration) (string, *ssh.ClientConfig) {
+	return host + ":22", &ssh.ClientConfig{
+		User: "baikal",
+		Auth: []ssh.AuthMethod{
+			ssh.Password("baikal"),
+		},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		Timeout:         timeout,
+	}
 }
 
 func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
@@ -137,12 +134,12 @@ func (c *Client) RigStat(ctx context.Context) (machine.RigStat, error) {
 func (c *Client) MinerSetting(ctx context.Context) (machine.MinerSetting, error) {
 	var s machine.MinerSetting
 
-	ms, err := getMinerSetting(ctx, c.ssh)
+	ms, err := getMinerSetting(ctx, c.SSH)
 	if err != nil {
 		return s, err
 	}
 
-	ps, err := getMinerPools(ctx, c.ssh)
+	ps, err := getMinerPools(ctx, c.SSH)
 	if err != nil {
 		return s, err
 	}
@@ -158,5 +155,5 @@ func (c *Client) SetMinerSetting(ctx context.Context, setting machine.MinerSetti
 		return err
 	}
 
-	return writeMinerAndPoolSetting(ctx, c.ssh, ms, ps)
+	return writeMinerAndPoolSetting(ctx, c.SSH, ms, ps)
 }

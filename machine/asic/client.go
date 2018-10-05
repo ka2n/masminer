@@ -2,6 +2,7 @@ package asic
 
 import (
 	"context"
+	"time"
 
 	"github.com/ka2n/masminer/machine"
 
@@ -21,6 +22,7 @@ type Client interface {
 
 // Connector handles *ssh.Client
 type Connector interface {
+	SSHConfig(host string, timeout time.Duration) (string, *ssh.ClientConfig)
 	SetSSH(ssh *ssh.Client)
 	Close() error
 }

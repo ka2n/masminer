@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/ka2n/masminer/machine/asic/base"
+
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/sync/errgroup"
 )
@@ -20,7 +22,7 @@ func (c *Client) GetStatsContext(ctx context.Context) (stats MinerStats, err err
 	var mu sync.Mutex
 
 	wg.Go(func() error {
-		ret, err := getMinerStatsSummary(ctx, c.ssh, c.summaryCMD)
+		ret, err := getMinerStatsSummary(ctx, c.SSH, c.summaryCMD)
 		if err != nil {
 			return err
 		}
@@ -31,7 +33,7 @@ func (c *Client) GetStatsContext(ctx context.Context) (stats MinerStats, err err
 	})
 
 	wg.Go(func() error {
-		ret, err := getMinerStatsPools(ctx, c.ssh, c.poolsCMD)
+		ret, err := getMinerStatsPools(ctx, c.SSH, c.poolsCMD)
 		if err != nil {
 			return err
 		}
@@ -42,7 +44,7 @@ func (c *Client) GetStatsContext(ctx context.Context) (stats MinerStats, err err
 	})
 
 	wg.Go(func() error {
-		ret, err := getMinerStatsDevs(ctx, c.ssh, c.statsCMD)
+		ret, err := getMinerStatsDevs(ctx, c.SSH, c.statsCMD)
 		if err != nil {
 			return err
 		}
@@ -55,7 +57,7 @@ func (c *Client) GetStatsContext(ctx context.Context) (stats MinerStats, err err
 }
 
 func getMinerStatsSummary(ctx context.Context, client *ssh.Client, cmd string) (summary MinerStatsSummary, err error) {
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return summary, err
 	}
@@ -91,7 +93,7 @@ func parseSummaryFromCGMinerSummary(in []byte) (MinerStatsSummary, error) {
 }
 
 func getMinerStatsPools(ctx context.Context, client *ssh.Client, cmd string) (pools []MinerStatsPool, err error) {
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return pools, err
 	}
@@ -99,7 +101,7 @@ func getMinerStatsPools(ctx context.Context, client *ssh.Client, cmd string) (po
 }
 
 func getMinerStatsDevs(ctx context.Context, client *ssh.Client, cmd string) (dev MinerStatsDevs, err error) {
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return dev, err
 	}
