@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"github.com/ka2n/masminer/minerapi"
+
+	"github.com/ka2n/masminer/machine/asic/base"
 )
 
 func (c *Client) GetStats() (stat MinerStats, err error) {
@@ -11,13 +15,13 @@ func (c *Client) GetStats() (stat MinerStats, err error) {
 }
 
 func (c *Client) GetStatsContext(ctx context.Context) (stat MinerStats, err error) {
-	ret, err := outputMinerRPC(ctx, c.ssh, "devs+pools+stats+summary", "")
+	ret, err := base.OutputMinerRPC(ctx, c.SSH, "devs+pools+stats+summary", "")
 	if err != nil {
 		return stat, err
 	}
 
 	var resp struct {
-		SGMultipleCMDResponse
+		minerapi.MultipleResponse
 		Devs    []SGDevsResponse    `json:"devs"`
 		Pools   []SGPoolsResponse   `json:"pools"`
 		Stats   []SGStatsResponse   `json:"stats"`

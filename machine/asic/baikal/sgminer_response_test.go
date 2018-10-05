@@ -4,27 +4,11 @@ import (
 	"encoding/json"
 	"os"
 	"testing"
+
+	"github.com/ka2n/masminer/minerapi"
 )
 
-// func TestClient(t *testing.T) {
-// 	sc, err := NewSSHClient("192.168.10.4:22")
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-// 	var c Client
-// 	c.SetSSH(sc)
-
-// 	setting, err := c.MinerSetting()
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	if err := c.SetMinerSetting(context.Background(), setting); err != nil {
-// 		t.Fatal(err)
-// 	}
-// }
-
-func TestParseCGMinerResponse(t *testing.T) {
+func TestParseMinerResponse(t *testing.T) {
 	tf, err := os.Open("../testdata/baikal/x10_summary+version+stats+pools.json")
 	if err != nil {
 		t.Fatal(err)
@@ -32,7 +16,7 @@ func TestParseCGMinerResponse(t *testing.T) {
 	defer tf.Close()
 
 	var resp struct {
-		SGMultipleCMDResponse
+		minerapi.MultipleResponse
 		Summary []SGSummaryResponse `json:"summary"`
 		Version []SGVersionResponse `json:"version"`
 		Stats   []SGStatsResponse   `json:"stats"`
