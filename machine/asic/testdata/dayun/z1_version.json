@@ -1,0 +1,18 @@
+{
+  "STATUS": [
+    {
+      "STATUS": "S",
+      "When": 1538729006,
+      "Code": 22,
+      "Msg": "CGMiner versions",
+      "Description": "cgminer 4.11.1"
+    }
+  ],
+  "VERSION": [
+    {
+      "CGMiner": "4.11.1",
+      "API": "3.4"
+    }
+  ],
+  "id": 1
+}

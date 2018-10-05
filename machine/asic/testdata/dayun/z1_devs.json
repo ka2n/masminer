@@ -1,0 +1,748 @@
+{
+  "STATUS": [
+    {
+      "STATUS": "S",
+      "When": 1538729043,
+      "Code": 9,
+      "Msg": "1 ASC(s)",
+      "Description": "cgminer 4.11.1"
+    }
+  ],
+  "DEVS": [
+    {
+      "ASC": 0,
+      "Name": "lyra2rev2",
+      "ID": 0,
+      "Enabled": "Y",
+      "Status": "Alive",
+      "Accepted": 2677,
+      "Rejected": 139,
+      "Hardware Errors": 0,
+      "Utility": 14.25,
+      "Last Share Pool": 0,
+      "Last Share Time": 1538729038,
+      "Total MH": 160265853.199,
+      "Diff1 Work": 0,
+      "Difficulty Accepted": 3902720,
+      "Difficulty Rejected": 291968,
+      "Last Share Difficulty": 2048,
+      "Last Valid Work": 1538729038,
+      "Device Hardware%": 0,
+      "Device Rejected%": 0,
+      "Device Elapsed": 11268,
+      "MHS 30S": 5592.41,
+      "MHS 5m": 5256.86,
+      "Fan Nunber": 2,
+      "Fan In": 3660,
+      "Fan Out": 3570,
+      "Frequency": 800,
+      "Temperature Core": 44,
+      "AutoFrequency": false,
+      "CheckNonceSubmit": true,
+      "AutoStopMiner_Enable": true,
+      "AutoStopMiner_Temperature": 80,
+      "AutoStopMiner_Fan_In": 1525,
+      "AutoStopMiner_Fan_Out": 1481,
+      "AutoRestart_Enable": true,
+      "AutoRestart_Hashrate": 1,
+      "AutoRestart_FailedRate": 50,
+      "CH1": {
+        "Temperature": 49,
+        "MHS 30S": 0,
+        "status": [
+          {
+            "x": 0,
+            "y": 0,
+            "accept": 32,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "accept": 23,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 0,
+            "y": 2,
+            "accept": 34,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 3,
+            "accept": 31,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 0,
+            "y": 4,
+            "accept": 25,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 5,
+            "accept": 24,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 0,
+            "y": 6,
+            "accept": 30,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 0,
+            "y": 7,
+            "accept": 29,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 8,
+            "accept": 27,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 0,
+            "y": 9,
+            "accept": 30,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 0,
+            "y": 10,
+            "accept": 37,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 0,
+            "y": 11,
+            "accept": 27,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 12,
+            "accept": 32,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 13,
+            "accept": 42,
+            "failed": 0,
+            "reject": 4
+          },
+          {
+            "x": 0,
+            "y": 14,
+            "accept": 29,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 0,
+            "y": 15,
+            "accept": 18,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 16,
+            "accept": 17,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 17,
+            "accept": 18,
+            "failed": 0,
+            "reject": 5
+          },
+          {
+            "x": 0,
+            "y": 18,
+            "accept": 30,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 0,
+            "y": 19,
+            "accept": 18,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 0,
+            "y": 20,
+            "accept": 39,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 21,
+            "accept": 33,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 0,
+            "y": 22,
+            "accept": 20,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 0,
+            "y": 23,
+            "accept": 24,
+            "failed": 0,
+            "reject": 0
+          }
+        ]
+      },
+      "CH2": {
+        "Temperature": 50,
+        "MHS 30S": 2236,
+        "status": [
+          {
+            "x": 1,
+            "y": 0,
+            "accept": 40,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "accept": 21,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 2,
+            "accept": 30,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 3,
+            "accept": 26,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 4,
+            "accept": 30,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 5,
+            "accept": 36,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 1,
+            "y": 6,
+            "accept": 31,
+            "failed": 0,
+            "reject": 4
+          },
+          {
+            "x": 1,
+            "y": 7,
+            "accept": 35,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 8,
+            "accept": 31,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 9,
+            "accept": 22,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 10,
+            "accept": 20,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 1,
+            "y": 11,
+            "accept": 30,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 1,
+            "y": 12,
+            "accept": 31,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 1,
+            "y": 13,
+            "accept": 29,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 1,
+            "y": 14,
+            "accept": 28,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 15,
+            "accept": 23,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 16,
+            "accept": 31,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 1,
+            "y": 17,
+            "accept": 37,
+            "failed": 0,
+            "reject": 4
+          },
+          {
+            "x": 1,
+            "y": 18,
+            "accept": 34,
+            "failed": 0,
+            "reject": 4
+          },
+          {
+            "x": 1,
+            "y": 19,
+            "accept": 34,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 1,
+            "y": 20,
+            "accept": 33,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 1,
+            "y": 21,
+            "accept": 26,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 1,
+            "y": 22,
+            "accept": 21,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 1,
+            "y": 23,
+            "accept": 35,
+            "failed": 0,
+            "reject": 2
+          }
+        ]
+      },
+      "CH3": {
+        "Temperature": 49,
+        "MHS 30S": 1118,
+        "status": [
+          {
+            "x": 2,
+            "y": 0,
+            "accept": 25,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 2,
+            "y": 1,
+            "accept": 30,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 2,
+            "y": 2,
+            "accept": 30,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 3,
+            "accept": 33,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 2,
+            "y": 4,
+            "accept": 22,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 2,
+            "y": 5,
+            "accept": 27,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 6,
+            "accept": 30,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 2,
+            "y": 7,
+            "accept": 21,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 8,
+            "accept": 28,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 2,
+            "y": 9,
+            "accept": 17,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 2,
+            "y": 10,
+            "accept": 25,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 2,
+            "y": 11,
+            "accept": 26,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 2,
+            "y": 12,
+            "accept": 26,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 13,
+            "accept": 24,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 14,
+            "accept": 28,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 2,
+            "y": 15,
+            "accept": 31,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 16,
+            "accept": 27,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 2,
+            "y": 17,
+            "accept": 32,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 2,
+            "y": 18,
+            "accept": 18,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 19,
+            "accept": 24,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 2,
+            "y": 20,
+            "accept": 19,
+            "failed": 0,
+            "reject": 4
+          },
+          {
+            "x": 2,
+            "y": 21,
+            "accept": 35,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 22,
+            "accept": 30,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 2,
+            "y": 23,
+            "accept": 20,
+            "failed": 0,
+            "reject": 2
+          }
+        ]
+      },
+      "CH4": {
+        "Temperature": 45,
+        "MHS 30S": 2236,
+        "status": [
+          {
+            "x": 3,
+            "y": 0,
+            "accept": 20,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 3,
+            "y": 1,
+            "accept": 29,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 3,
+            "y": 2,
+            "accept": 30,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 3,
+            "y": 3,
+            "accept": 32,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 3,
+            "y": 4,
+            "accept": 31,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 3,
+            "y": 5,
+            "accept": 29,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 3,
+            "y": 6,
+            "accept": 23,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 3,
+            "y": 7,
+            "accept": 19,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 3,
+            "y": 8,
+            "accept": 24,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 3,
+            "y": 9,
+            "accept": 22,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 3,
+            "y": 10,
+            "accept": 27,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 3,
+            "y": 11,
+            "accept": 25,
+            "failed": 0,
+            "reject": 4
+          },
+          {
+            "x": 3,
+            "y": 12,
+            "accept": 30,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 3,
+            "y": 13,
+            "accept": 31,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 3,
+            "y": 14,
+            "accept": 30,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 3,
+            "y": 15,
+            "accept": 40,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 3,
+            "y": 16,
+            "accept": 27,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 3,
+            "y": 17,
+            "accept": 44,
+            "failed": 0,
+            "reject": 1
+          },
+          {
+            "x": 3,
+            "y": 18,
+            "accept": 21,
+            "failed": 0,
+            "reject": 0
+          },
+          {
+            "x": 3,
+            "y": 19,
+            "accept": 25,
+            "failed": 0,
+            "reject": 2
+          },
+          {
+            "x": 3,
+            "y": 20,
+            "accept": 20,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 3,
+            "y": 21,
+            "accept": 18,
+            "failed": 0,
+            "reject": 3
+          },
+          {
+            "x": 3,
+            "y": 22,
+            "accept": 42,
+            "failed": 0,
+            "reject": 4
+          },
+          {
+            "x": 3,
+            "y": 23,
+            "accept": 27,
+            "failed": 0,
+            "reject": 2
+          }
+        ]
+      }
+    }
+  ],
+  "id": 1
+}

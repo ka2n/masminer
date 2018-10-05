@@ -10,6 +10,7 @@ import (
 	"github.com/ka2n/masminer/machine"
 	"github.com/ka2n/masminer/machine/asic/antminer"
 	"github.com/ka2n/masminer/machine/asic/baikal"
+	"github.com/ka2n/masminer/machine/asic/dayun"
 	"github.com/ka2n/masminer/sshutil"
 )
 
@@ -58,6 +59,8 @@ func dialByHostname(ipAddr string, hostname string, timeout time.Duration) (Clie
 		client = &baikal.Client{}
 	case strings.Contains(hostLower, "antminer"):
 		client = &antminer.Client{}
+	case strings.Contains(hostLower, "dayun"):
+		client = &dayun.Client{}
 	default:
 		return nil, nil
 	}
@@ -77,6 +80,7 @@ func dialBySSH(ipAddr string, timeout time.Duration) (Client, error) {
 	tries := []Client{
 		&antminer.Client{},
 		&baikal.Client{},
+		&dayun.Client{},
 	}
 	for _, t := range tries {
 		addr, cfg := t.SSHConfig(ipAddr, timeout)
