@@ -40,10 +40,11 @@ func (c *Client) GetSystemInfoContext(ctx context.Context) (info SystemInfo, err
 }
 
 func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error) {
-	var wg errgroup.Group
 	var mu sync.Mutex
 	client := c.SSH
 	info.MinerType = c.minerType
+
+	wg, ctx := errgroup.WithContext(ctx)
 
 	wg.Go(func() error {
 		ret, err := getMacAddr(ctx, client, c.ipCMDPath)
@@ -108,17 +109,6 @@ func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error)
 		mu.Lock()
 		defer mu.Unlock()
 		info.FileSystemVersion = ret
-		return nil
-	})
-
-	wg.Go(func() error {
-		ret, err := base.GetUptimeSeconds(ctx, client)
-		if err != nil {
-			return err
-		}
-		mu.Lock()
-		defer mu.Unlock()
-		info.UptimeSeconds = ret
 		return nil
 	})
 

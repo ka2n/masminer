@@ -39,8 +39,8 @@ func (c *Client) GetSystemInfoContext(ctx context.Context) (info SystemInfo, err
 }
 
 func getSystemInfo(ctx context.Context, client *ssh.Client) (info SystemInfo, err error) {
-	var wg errgroup.Group
 	var mu sync.Mutex
+	wg, ctx := errgroup.WithContext(ctx)
 
 	wg.Go(func() error {
 		ret, err := base.GetMacAddr(ctx, client)
@@ -61,6 +61,17 @@ func getSystemInfo(ctx context.Context, client *ssh.Client) (info SystemInfo, er
 		mu.Lock()
 		defer mu.Unlock()
 		info.IPAddr = ret
+		return nil
+	})
+
+	wg.Go(func() error {
+		ret, err := base.GetUptimeSeconds(ctx, client)
+		if err != nil {
+			return err
+		}
+		mu.Lock()
+		defer mu.Unlock()
+		info.UptimeSeconds = ret
 		return nil
 	})
 

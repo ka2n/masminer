@@ -18,8 +18,9 @@ func (c *Client) GetStats() (stats MinerStats, err error) {
 
 // GetStatsContext returns MinerStats
 func (c *Client) GetStatsContext(ctx context.Context) (stats MinerStats, err error) {
-	var wg errgroup.Group
 	var mu sync.Mutex
+
+	wg, ctx := errgroup.WithContext(ctx)
 
 	wg.Go(func() error {
 		ret, err := getMinerStatsSummary(ctx, c.SSH, c.summaryCMD)

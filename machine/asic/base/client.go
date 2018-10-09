@@ -54,6 +54,12 @@ func GetUptimeSeconds(ctx context.Context, client *ssh.Client) (string, error) {
 	return string(bytes.TrimSpace(ret)), err
 }
 
+func GetCPUTemp(ctx context.Context, client *ssh.Client) (string, error) {
+	cmd := `cat /sys/class/thermal/thermal_zone*/temp | awk '{sum+=$1} END {print sum/NR}'`
+	ret, err := OutputRemoteShell(ctx, client, cmd)
+	return string(bytes.TrimSpace(ret)), err
+}
+
 func GetIPAddr(ctx context.Context, client *ssh.Client) (string, error) {
 	ret, err := OutputRemoteShell(ctx, client, `ip a show eth0 | grep -o 'inet\s.*' | cut -d' ' -f2`)
 	if err != nil {

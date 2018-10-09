@@ -89,6 +89,8 @@ func (c *Client) RigStat(ctx context.Context) (machine.RigStat, error) {
 	stat.HardwareErrors = strconv.Itoa(ms.Summary.HardwareErrors)
 	stat.Utility = fmt.Sprintf("%.4f", ms.Summary.Utility)
 
+	stat.System.TempCPU = ms.System.TempCPU
+
 	if len(ms.Stats) != len(ms.Devs) {
 		return stat, fmt.Errorf("invalid stats/devs")
 	}
