@@ -146,23 +146,22 @@ func getSystemInfo(ctx context.Context, client *ssh.Client) (info SystemInfo, er
 		info.APIVersion = version.API
 		mu.Unlock()
 
-		if !(len(resp.Stats) != 0 && len(resp.Stats[0].Stats) != 0) {
-			return fmt.Errorf("error sgminer RPC response")
+		// No device is possible
+		if len(resp.Stats) != 0 && len(resp.Stats[0].Stats) != 0 {
+			stat := resp.Stats[0].Stats[0]
+			mu.Lock()
+			defer mu.Unlock()
+
+			info.ProductType, err = modelFromAPIHWV(stat.HWV.String())
+			if err != nil {
+				return err
+			}
+			info.ProductVersion, err = minerVersionFromFWV(stat.FWV.String())
+			if err != nil {
+				return err
+			}
 		}
 
-		stat := resp.Stats[0].Stats[0]
-
-		mu.Lock()
-		defer mu.Unlock()
-
-		info.ProductType, err = modelFromAPIHWV(stat.HWV.String())
-		if err != nil {
-			return err
-		}
-		info.ProductVersion, err = minerVersionFromFWV(stat.FWV.String())
-		if err != nil {
-			return err
-		}
 		return nil
 	})
 
