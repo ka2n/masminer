@@ -1,6 +1,7 @@
 package asic
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -24,7 +25,10 @@ func DialTimeout(r machine.RemoteRig, timeout time.Duration) (Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return c, c.Setup()
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	return c, c.Setup(ctx)
 }
 
 func dial(r machine.RemoteRig, timeout time.Duration) (Client, error) {

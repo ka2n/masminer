@@ -28,11 +28,7 @@ type Client struct {
 	initdCMD   string
 }
 
-func (c *Client) Setup() error {
-	return c.SetupContext(nil)
-}
-
-func (c *Client) SetupContext(ctx context.Context) error {
+func (c *Client) Setup(ctx context.Context) error {
 	// Check miner is cgminer or bmminer
 	switch {
 	case base.RunRemoteShell(ctx, c.SSH, "which cgminer-api") == nil:

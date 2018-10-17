@@ -13,7 +13,7 @@ import (
 )
 
 func (c *Client) GetStats() (stat MinerStats, err error) {
-	return c.GetStatsContext(nil)
+	return c.GetStatsContext(context.Background())
 }
 
 func (c *Client) GetStatsContext(ctx context.Context) (stat MinerStats, err error) {

@@ -13,12 +13,12 @@ import (
 
 // GetMinerSetting returns MinerSetting or create with default setting
 func (c *Client) GetMinerSetting() (setting MinerSetting, err error) {
-	return c.GetMinerSettingContext(nil)
+	return c.GetMinerSettingContext(context.Background())
 }
 
 // GetMinerSettingContext returns MinerSetting or create with default setting
 func (c *Client) GetMinerSettingContext(ctx context.Context) (setting MinerSetting, err error) {
-	info, err := c.GetSystemInfo()
+	info, err := c.GetSystemInfoContext(ctx)
 	if err != nil {
 		return setting, err
 	}

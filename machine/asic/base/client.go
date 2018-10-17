@@ -20,7 +20,7 @@ func (c *Client) SetSSH(client *ssh.Client) {
 	c.SSH = client
 }
 
-func (c *Client) Setup() error {
+func (c *Client) Setup(ctx context.Context) error {
 	return nil
 }
 

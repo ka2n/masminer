@@ -14,7 +14,7 @@ import (
 )
 
 func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
-	return c.GetSystemInfoContext(nil)
+	return c.GetSystemInfoContext(context.Background())
 }
 
 func (c *Client) GetSystemInfoContext(ctx context.Context) (info SystemInfo, err error) {
