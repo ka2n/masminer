@@ -14,7 +14,7 @@ type Dialer interface {
 }
 
 func OutputRemoteShell(ctx context.Context, client *ssh.Client, in string) ([]byte, error) {
-	sess, err := client.NewSession()
+	sess, err := newSessionContext(ctx, client)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func OutputRemoteShell(ctx context.Context, client *ssh.Client, in string) ([]by
 }
 
 func RunRemoteShell(ctx context.Context, client *ssh.Client, in string) error {
-	sess, err := client.NewSession()
+	sess, err := newSessionContext(ctx, client)
 	if err != nil {
 		return err
 	}
@@ -50,6 +50,24 @@ func OutputMinerRPC(ctx context.Context, d Dialer, command, argument string) ([]
 		return nil, ctx.Err()
 	case <-done:
 		return out, err
+	}
+}
+
+func newSessionContext(ctx context.Context, client *ssh.Client) (*ssh.Session, error) {
+	var sess *ssh.Session
+	var err error
+
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		sess, err = client.NewSession()
+	}()
+
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	case <-done:
+		return sess, err
 	}
 }
 
