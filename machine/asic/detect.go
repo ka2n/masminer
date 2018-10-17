@@ -20,7 +20,7 @@ func Dial(r machine.RemoteRig) (Client, error) {
 
 // DialTimeout : get asic client from RemoteRig with connection timeout
 func DialTimeout(r machine.RemoteRig, timeout time.Duration) (Client, error) {
-	c, err := dial(r, 0)
+	c, err := dial(r, timeout)
 	if err != nil {
 		return nil, err
 	}

@@ -19,6 +19,11 @@ func (d *TimeoutDialer) DialTimeout(network, addr string, config *ssh.ClientConf
 	if timeout == 0 {
 		timeout = defaultTimeout
 	}
+
+	if config.Timeout == 0 {
+		config.Timeout = timeout
+	}
+
 	done := make(chan struct{}, 1)
 	go func() {
 		defer close(done)
@@ -29,6 +34,9 @@ func (d *TimeoutDialer) DialTimeout(network, addr string, config *ssh.ClientConf
 	case <-done:
 		return client, err
 	case <-time.After(timeout):
-		return nil, fmt.Errorf("tmed out dialing %s:%s", network, addr)
+		if client != nil {
+			client.Close()
+		}
+		return nil, fmt.Errorf("timed out dialing %s:%s", network, addr)
 	}
 }
