@@ -2,9 +2,11 @@ package base
 
 import (
 	"context"
+	"fmt"
 	"net"
 
 	"github.com/ka2n/masminer/cgminerproxy"
+
 	"github.com/ka2n/masminer/sshutil"
 	"golang.org/x/crypto/ssh"
 )
@@ -36,21 +38,26 @@ func RunRemoteShell(ctx context.Context, client *ssh.Client, in string) error {
 }
 
 func OutputMinerRPC(ctx context.Context, d Dialer, command, argument string) ([]byte, error) {
-	var out []byte
-	var err error
-
-	done := make(chan struct{})
-	go func() {
-		defer close(done)
-		out, err = outputMinerRPCInner(d, command, argument)
-	}()
-
-	select {
-	case <-ctx.Done():
-		return nil, ctx.Err()
-	case <-done:
-		return out, err
+	conn, err := d.Dial("tcp", "127.0.0.1:4028")
+	if err != nil {
+		return nil, err
 	}
+	defer conn.Close()
+
+	deadline, _ := ctx.Deadline()
+	if !deadline.IsZero() {
+		fmt.Println("Set deadline")
+		if err := conn.SetReadDeadline(deadline); err != nil {
+			return nil, err
+		}
+	}
+
+	proxy := new(cgminerproxy.CGMinerProxy)
+	ret, err := proxy.RunCommandConn(conn, command, argument)
+	if err != nil {
+		return nil, err
+	}
+	return ret, nil
 }
 
 func newSessionContext(ctx context.Context, client *ssh.Client) (*ssh.Session, error) {
@@ -69,19 +76,4 @@ func newSessionContext(ctx context.Context, client *ssh.Client) (*ssh.Session, e
 	case <-done:
 		return sess, err
 	}
-}
-
-func outputMinerRPCInner(d Dialer, command, argument string) ([]byte, error) {
-	conn, err := d.Dial("tcp", "127.0.0.1:4028")
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-
-	proxy := new(cgminerproxy.CGMinerProxy)
-	ret, err := proxy.RunCommandConn(conn, command, argument)
-	if err != nil {
-		return nil, err
-	}
-	return ret, nil
 }

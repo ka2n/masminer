@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 	"time"
 )
@@ -58,7 +59,7 @@ func (proxy *CGMinerProxy) RunCommandConn(conn net.Conn, command, argument strin
 	fmt.Fprintf(conn, "%s", reqb)
 
 	resp, err := bufio.NewReader(conn).ReadBytes('\x00')
-	if err != nil {
+	if err != nil && err != io.EOF {
 		return nil, err
 	}
 	return bytes.TrimRight(resp, "\x00"), nil
