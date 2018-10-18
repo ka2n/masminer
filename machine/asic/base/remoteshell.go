@@ -2,7 +2,6 @@ package base
 
 import (
 	"context"
-	"fmt"
 	"net"
 
 	"github.com/ka2n/masminer/cgminerproxy"
@@ -44,13 +43,10 @@ func OutputMinerRPC(ctx context.Context, d Dialer, command, argument string) ([]
 	}
 	defer conn.Close()
 
-	deadline, _ := ctx.Deadline()
-	if !deadline.IsZero() {
-		fmt.Println("Set deadline")
-		if err := conn.SetReadDeadline(deadline); err != nil {
-			return nil, err
-		}
-	}
+	go func() {
+		<-ctx.Done()
+		conn.Close()
+	}()
 
 	proxy := new(cgminerproxy.CGMinerProxy)
 	ret, err := proxy.RunCommandConn(conn, command, argument)
