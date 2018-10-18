@@ -19,6 +19,7 @@ func NewSSHClient(host string) (*ssh.Client, error) {
 // NewSSHClientTimeout returns *ssh.Client with default setting with connection timeout
 func NewSSHClientTimeout(host string, timeout time.Duration) (*ssh.Client, error) {
 	var c Client
-	addr, cfg := c.SSHConfig(host, timeout)
+	addr, cfg := c.SSHConfig(host)
+	cfg.Timeout = timeout
 	return sshDialer.DialTimeout("tcp", addr, cfg, timeout)
 }

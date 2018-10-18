@@ -66,7 +66,8 @@ func dialByHostname(ipAddr string, hostname string, timeout time.Duration) (Clie
 		return nil, nil
 	}
 
-	addr, cfg := client.SSHConfig(ipAddr, timeout)
+	addr, cfg := client.SSHConfig(ipAddr)
+	cfg.Timeout = timeout
 	conn, err := dialer.DialTimeout("tcp", addr, cfg, timeout)
 	if err != nil {
 		return nil, errors.Wrap(err, "antminer client dial failed")
@@ -83,7 +84,8 @@ func dialBySSH(ipAddr string, timeout time.Duration) (Client, error) {
 		&baikal.Client{},
 	}
 	for _, t := range tries {
-		addr, cfg := t.SSHConfig(ipAddr, timeout)
+		addr, cfg := t.SSHConfig(ipAddr)
+		cfg.Timeout = timeout
 		conn, err := dialer.DialTimeout("tcp", addr, cfg, timeout)
 		if err != nil {
 			continue

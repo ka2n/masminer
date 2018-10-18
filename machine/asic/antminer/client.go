@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/ka2n/masminer/machine"
 	"github.com/ka2n/masminer/machine/asic/base"
@@ -79,14 +78,13 @@ func (c *Client) Reboot(ctx context.Context) error {
 	return base.RunRemoteShell(ctx, c.SSH, "shutdown -r +5")
 }
 
-func (c *Client) SSHConfig(host string, timeout time.Duration) (string, *ssh.ClientConfig) {
+func (c *Client) SSHConfig(host string) (string, *ssh.ClientConfig) {
 	return host + ":22", &ssh.ClientConfig{
 		User: "root",
 		Auth: []ssh.AuthMethod{
 			ssh.Password("admin"),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout:         timeout,
 	}
 }
 
