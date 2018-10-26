@@ -5,4 +5,9 @@ type MinerStats struct {
 	Pools   []SGPool
 	Stats   []SGStat
 	Summary SGSummary
+	System  MinerStatsSystem
+}
+
+type MinerStatsSystem struct {
+	TempCPU string
 }

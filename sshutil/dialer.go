@@ -1,7 +1,7 @@
 package sshutil
 
 import (
-	"fmt"
+	"net"
 	"time"
 
 	"golang.org/x/crypto/ssh"
@@ -19,16 +19,27 @@ func (d *TimeoutDialer) DialTimeout(network, addr string, config *ssh.ClientConf
 	if timeout == 0 {
 		timeout = defaultTimeout
 	}
-	done := make(chan struct{}, 1)
-	go func() {
-		defer close(done)
-		client, err = ssh.Dial(network, addr, config)
-	}()
 
-	select {
-	case <-done:
-		return client, err
-	case <-time.After(timeout):
-		return nil, fmt.Errorf("tmed out dialing %s:%s", network, addr)
+	if config.Timeout == 0 {
+		config.Timeout = timeout
 	}
+
+	conn, err := net.DialTimeout(network, addr, config.Timeout)
+	if err != nil {
+		return nil, err
+	}
+
+	if config.Timeout > 0 {
+		conn.SetReadDeadline(time.Now().Add(config.Timeout))
+	}
+
+	c, chans, reqs, err := ssh.NewClientConn(conn, addr, config)
+	if err != nil {
+		return nil, err
+	}
+
+	if config.Timeout > 0 {
+		conn.SetReadDeadline(time.Time{})
+	}
+	return ssh.NewClient(c, chans, reqs), nil
 }

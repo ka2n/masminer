@@ -1,46 +1,33 @@
 package baikal
 
-import "encoding/json"
+import (
+	"encoding/json"
 
-type SGMultipleCMDResponse struct {
-	ID int `json:"id"`
-}
-
-type SGAPIStatus struct {
-	Status      string `json:"STATUS"`
-	When        int    `json:"When"`
-	Code        int    `json:"Code"`
-	Msg         string `json:"Msg"`
-	Description string `json:"Description"`
-}
-
-type SGCommonResponse struct {
-	Status []SGAPIStatus `json:"STATUS"`
-	ID     int           `json:"id"`
-}
+	"github.com/ka2n/masminer/minerapi"
+)
 
 type SGSummaryResponse struct {
-	SGCommonResponse
+	minerapi.ResponseCommon
 	Summary []SGSummary `json:"SUMMARY"`
 }
 
 type SGStatsResponse struct {
-	SGCommonResponse
+	minerapi.ResponseCommon
 	Stats []SGStat `json:"STATS"`
 }
 
 type SGVersionResponse struct {
-	SGCommonResponse
+	minerapi.ResponseCommon
 	Version []SGVersion `json:"VERSION"`
 }
 
 type SGPoolsResponse struct {
-	SGCommonResponse
+	minerapi.ResponseCommon
 	Pools []SGPool `json:"POOLS"`
 }
 
 type SGDevsResponse struct {
-	SGCommonResponse
+	minerapi.ResponseCommon
 	Devs []SGDev `json:"DEVS"`
 }
 

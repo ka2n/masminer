@@ -16,11 +16,12 @@ type Client interface {
 	StatReader
 	SettingReader
 	SettingWriter
-	Setup() error
+	Setup(context.Context) error
 }
 
 // Connector handles *ssh.Client
 type Connector interface {
+	SSHConfig(host string) (string, *ssh.ClientConfig)
 	SetSSH(ssh *ssh.Client)
 	Close() error
 }

@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/ka2n/masminer/machine"
+	"github.com/ka2n/masminer/machine/asic/base"
 	"golang.org/x/crypto/ssh"
 )
 
 type Client struct {
-	mu         sync.RWMutex
-	ssh        *ssh.Client
+	base.Client
 	systemInfo *SystemInfo
 
 	minerType  string
@@ -28,14 +27,10 @@ type Client struct {
 	initdCMD   string
 }
 
-func (c *Client) Setup() error {
-	return c.SetupContext(nil)
-}
-
-func (c *Client) SetupContext(ctx context.Context) error {
+func (c *Client) Setup(ctx context.Context) error {
 	// Check miner is cgminer or bmminer
 	switch {
-	case runRemoteShell(ctx, c.ssh, "which cgminer-api") == nil:
+	case base.RunRemoteShell(ctx, c.SSH, "which cgminer-api") == nil:
 		c.configPath = minerConfigPath
 		c.summaryCMD = minerAPISummaryCMD
 		c.poolsCMD = minerAPIPoolsCMD
@@ -43,7 +38,7 @@ func (c *Client) SetupContext(ctx context.Context) error {
 		c.versionCMD = minerAPIVersionCMD
 		c.initdCMD = minerInitdCMD
 		c.minerType = "CGMiner"
-	case runRemoteShell(ctx, c.ssh, "which bmminer-api") == nil:
+	case base.RunRemoteShell(ctx, c.SSH, "which bmminer-api") == nil:
 		c.configPath = minerBMMinerConfigPath
 		c.summaryCMD = minerBMMinerAPISummaryCMD
 		c.poolsCMD = minerBMMinerAPIPoolsCMD
@@ -56,9 +51,9 @@ func (c *Client) SetupContext(ctx context.Context) error {
 	}
 
 	switch {
-	case runRemoteShell(ctx, c.ssh, "type /bin/ip") == nil:
+	case base.RunRemoteShell(ctx, c.SSH, "type /bin/ip") == nil:
 		c.ipCMDPath = "/bin/ip"
-	case runRemoteShell(ctx, c.ssh, "type /sbin/ip") == nil:
+	case base.RunRemoteShell(ctx, c.SSH, "type /sbin/ip") == nil:
 		c.ipCMDPath = "/sbin/ip"
 	default:
 		return fmt.Errorf("cannot detect ip command path")
@@ -68,29 +63,29 @@ func (c *Client) SetupContext(ctx context.Context) error {
 }
 
 func (c *Client) MineStop(ctx context.Context) error {
-	return runRemoteShell(ctx, c.ssh, fmt.Sprintf(c.initdCMD, "stop"))
+	return base.RunRemoteShell(ctx, c.SSH, fmt.Sprintf(c.initdCMD, "stop"))
 }
 
 func (c *Client) MineStart(ctx context.Context) error {
-	return runRemoteShell(ctx, c.ssh, fmt.Sprintf(c.initdCMD, "start"))
+	return base.RunRemoteShell(ctx, c.SSH, fmt.Sprintf(c.initdCMD, "start"))
 }
 
 func (c *Client) Restart(ctx context.Context) error {
-	return runRemoteShell(ctx, c.ssh, fmt.Sprintf(c.initdCMD, "restart"))
+	return base.RunRemoteShell(ctx, c.SSH, fmt.Sprintf(c.initdCMD, "restart"))
 }
 
 func (c *Client) Reboot(ctx context.Context) error {
-	return runRemoteShell(ctx, c.ssh, "shutdown -r +5")
+	return base.RunRemoteShell(ctx, c.SSH, "shutdown -r +5")
 }
 
-func (c *Client) SetSSH(client *ssh.Client) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.ssh = client
-}
-
-func (c *Client) Close() error {
-	return c.ssh.Close()
+func (c *Client) SSHConfig(host string) (string, *ssh.ClientConfig) {
+	return host + ":22", &ssh.ClientConfig{
+		User: "root",
+		Auth: []ssh.AuthMethod{
+			ssh.Password("admin"),
+		},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
 }
 
 func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {

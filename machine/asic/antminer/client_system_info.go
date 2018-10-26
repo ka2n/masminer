@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/ka2n/masminer/machine"
+	"github.com/ka2n/masminer/machine/asic/base"
 	mnet "github.com/ka2n/masminer/net"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/sync/errgroup"
@@ -13,18 +14,18 @@ import (
 
 // GetSystemInfo returns SystemInfo
 func (c *Client) GetSystemInfo() (info SystemInfo, err error) {
-	return c.GetSystemInfoContext(nil)
+	return c.GetSystemInfoContext(context.Background())
 }
 
 // GetSystemInfoContext returns SystemInfo
 func (c *Client) GetSystemInfoContext(ctx context.Context) (info SystemInfo, err error) {
 	// Read from cache
-	c.mu.RLock()
+	c.MU.RLock()
 	if c.systemInfo != nil {
-		c.mu.RUnlock()
+		c.MU.RUnlock()
 		return *c.systemInfo, nil
 	}
-	c.mu.RUnlock()
+	c.MU.RUnlock()
 
 	info, err = c.getSystemInfo(ctx)
 	if err != nil {
@@ -32,17 +33,18 @@ func (c *Client) GetSystemInfoContext(ctx context.Context) (info SystemInfo, err
 	}
 
 	// Cache
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	c.MU.Lock()
+	defer c.MU.Unlock()
 	c.systemInfo = &info
 	return info, nil
 }
 
 func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error) {
-	var wg errgroup.Group
 	var mu sync.Mutex
-	client := c.ssh
+	client := c.SSH
 	info.MinerType = c.minerType
+
+	wg, ctx := errgroup.WithContext(ctx)
 
 	wg.Go(func() error {
 		ret, err := getMacAddr(ctx, client, c.ipCMDPath)
@@ -67,7 +69,7 @@ func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error)
 	})
 
 	wg.Go(func() error {
-		ret, err := getHostname(ctx, client)
+		ret, err := base.GetHostname(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -89,7 +91,7 @@ func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error)
 	})
 
 	wg.Go(func() error {
-		ret, err := getKernelVersion(ctx, client)
+		ret, err := base.GetKernelVersion(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -100,24 +102,13 @@ func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error)
 	})
 
 	wg.Go(func() error {
-		ret, err := getFileSystemVersion(ctx, client)
+		ret, err := base.GetFileSystemVersion(ctx, client)
 		if err != nil {
 			return err
 		}
 		mu.Lock()
 		defer mu.Unlock()
 		info.FileSystemVersion = ret
-		return nil
-	})
-
-	wg.Go(func() error {
-		ret, err := getUptimeSeconds(ctx, client)
-		if err != nil {
-			return err
-		}
-		mu.Lock()
-		defer mu.Unlock()
-		info.UptimeSeconds = ret
 		return nil
 	})
 
@@ -147,44 +138,27 @@ func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error)
 
 func getMacAddr(ctx context.Context, client *ssh.Client, ipCMD string) (string, error) {
 	cmd := ipCMD + ` link show eth0 | grep -o 'link/.*' | cut -d' ' -f2`
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	return string(bytes.TrimSpace(ret)), err
-}
-
-func getHostname(ctx context.Context, client *ssh.Client) (string, error) {
-	ret, err := outputRemoteShell(ctx, client, `hostname`)
-	return string(ret), err
 }
 
 func getModel(ctx context.Context, client *ssh.Client) (machine.Model, error) {
 	cmd := `sed -n 2p ` + metadataPath
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return machine.ModelUnknown, err
 	}
 	return MinerTypeFromString(string(ret))
 }
 
-func getKernelVersion(ctx context.Context, client *ssh.Client) (string, error) {
-	cmd := `uname -srv`
-	ret, err := outputRemoteShell(ctx, client, cmd)
-	return string(bytes.TrimSpace(ret)), err
-}
-
-func getUptimeSeconds(ctx context.Context, client *ssh.Client) (string, error) {
-	cmd := "cut -d \".\" -f 1 /proc/uptime"
-	ret, err := outputRemoteShell(ctx, client, cmd)
-	return string(bytes.TrimSpace(ret)), err
-}
-
 func getFileSystemVersion(ctx context.Context, client *ssh.Client) (string, error) {
 	cmd := `sed -n 1p ` + metadataPath
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	return string(bytes.TrimSpace(ret)), err
 }
 
 func getMinerVersion(ctx context.Context, client *ssh.Client, cmd string) (string, error) {
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return "", err
 	}
@@ -192,7 +166,7 @@ func getMinerVersion(ctx context.Context, client *ssh.Client, cmd string) (strin
 }
 
 func getHardwareVersions(ctx context.Context, client *ssh.Client, cmd string) ([]string, error) {
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +175,7 @@ func getHardwareVersions(ctx context.Context, client *ssh.Client, cmd string) ([
 
 func getIPAddr(ctx context.Context, client *ssh.Client, ipCMD string) (string, error) {
 	cmd := ipCMD + ` addr show eth0 | grep -o 'inet\s.*' | cut -d' ' -f2`
-	ret, err := outputRemoteShell(ctx, client, cmd)
+	ret, err := base.OutputRemoteShell(ctx, client, cmd)
 	if err != nil {
 		return string(ret), err
 	}

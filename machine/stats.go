@@ -14,8 +14,14 @@ type RigStat struct {
 	HardwareErrors string
 	Utility        string
 
+	System SystemStat
+
 	Devices []DeviceStat
 	Pools   []PoolStat
+}
+
+type SystemStat struct {
+	TempCPU string
 }
 
 // DeviceStat is a status of each chip

@@ -5,22 +5,24 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/ka2n/masminer/machine/asic/base"
+
 	"github.com/ka2n/masminer/machine"
 	"golang.org/x/crypto/ssh"
 )
 
 // GetMinerSetting returns MinerSetting or create with default setting
 func (c *Client) GetMinerSetting() (setting MinerSetting, err error) {
-	return c.GetMinerSettingContext(nil)
+	return c.GetMinerSettingContext(context.Background())
 }
 
 // GetMinerSettingContext returns MinerSetting or create with default setting
 func (c *Client) GetMinerSettingContext(ctx context.Context) (setting MinerSetting, err error) {
-	info, err := c.GetSystemInfo()
+	info, err := c.GetSystemInfoContext(ctx)
 	if err != nil {
 		return setting, err
 	}
-	return getMinerSetting(ctx, c.ssh, info.Model)
+	return getMinerSetting(ctx, c.SSH, info.Model)
 }
 
 func (c *Client) WriteCGMinerSettingContext(ctx context.Context, setting MinerSetting) error {
@@ -28,7 +30,7 @@ func (c *Client) WriteCGMinerSettingContext(ctx context.Context, setting MinerSe
 	if err != nil {
 		return err
 	}
-	err = runRemoteShell(ctx, c.ssh, fmt.Sprintf(`
+	err = base.RunRemoteShell(ctx, c.SSH, fmt.Sprintf(`
 set -ex
 CONFIG_PATH=%s
 cat <<'EOF' > $CONFIG_PATH
@@ -39,7 +41,7 @@ EOF
 		return err
 	}
 
-	_, err = outputMinerRPC(ctx, c.ssh, "restart", "")
+	_, err = base.OutputMinerRPC(ctx, c.SSH, "restart", "")
 	return err
 }
 
@@ -54,7 +56,7 @@ func getMinerSetting(ctx context.Context, client *ssh.Client, minerType machine.
 		panic(err)
 	}
 
-	output, err := outputRemoteShell(ctx, client, fmt.Sprintf(`
+	output, err := base.OutputRemoteShell(ctx, client, fmt.Sprintf(`
 set -ex
 CONFIG_PATH=%s
 if [ ! -f $CONFIG_PATH ] ; then
