@@ -29,12 +29,12 @@
   revision = "643b796c78590b8ca45b3cc43d2eddb3b8b47f8b"
 
 [[projects]]
-  digest = "1:c6fe3b8ac122ea07b32d37990ed35fb4838761bbb151d93c1b22d2d4eec798bb"
+  digest = "1:b20d8767957e40b9302a8caaee88caa698513fbd972509a54555302c3aebfa04"
   name = "github.com/miekg/dns"
   packages = ["."]
   pruneopts = "UT"
-  revision = "e57bf427e68187a27e22adceac868350d7a7079b"
-  version = "v1.0.7"
+  revision = "7064f7248f5fa5fd79382a76328b4e200b79e4ae"
+  version = "v1.0.15"
 
 [[projects]]
   branch = "master"
@@ -53,67 +53,67 @@
   version = "v0.8.0"
 
 [[projects]]
-  digest = "1:0fb7448b4e1b68d66904f2262b518e84d698af24de2b29dd0af0eaacb9edaaa7"
+  digest = "1:568faa23f8a86cd59da9c9272c9fa3e4857e08b2e9a24b9e93cabb22ea645c4c"
   name = "github.com/shirou/gopsutil"
   packages = [
     "cpu",
     "internal/common",
   ]
   pruneopts = "UT"
-  revision = "c95755e4bcd7a62bb8bd33f3a597a7c7f35e2cf3"
-  version = "v2.18.04"
+  revision = "3ec50d2876a36047b2ca39f955ba88fb7a455e92"
+  version = "v2.18.10"
 
 [[projects]]
   branch = "master"
-  digest = "1:53be9c9711b98de65628026a9fda4fb9b428a58a6c9cfc743853997e622af7b8"
+  digest = "1:082c538aa8ca5e086d5d20ec16417e7fca237de2c4146485e02aa09989d0ff38"
   name = "golang.org/x/crypto"
   packages = [
     "curve25519",
     "ed25519",
     "ed25519/internal/edwards25519",
     "internal/chacha20",
+    "internal/subtle",
     "poly1305",
     "ssh",
   ]
   pruneopts = "UT"
-  revision = "1a580b3eff7814fc9b40602fd35256c63b50f491"
+  revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
 
 [[projects]]
   branch = "master"
-  digest = "1:0dcbaf802d84a78010a55836deb9b5c328e5c4c9ee6baa31cf37d0e22d8c8831"
+  digest = "1:2fc769e9770aae5a1caebdc2f9ff3424f622a17a2067978b02574cd86359a8f5"
   name = "golang.org/x/net"
   packages = [
     "bpf",
-    "context",
     "internal/iana",
     "internal/socket",
     "ipv4",
     "ipv6",
   ]
   pruneopts = "UT"
-  revision = "57065200b4b034a1c8ad54ff77069408c2218ae6"
+  revision = "88d92db4c548972d942ac2a3531a8a9a34c82ca6"
 
 [[projects]]
   branch = "master"
-  digest = "1:33bc276bce48c71255132cca14981fa8ced4844f35ec0399b0390c591c178a0a"
+  digest = "1:f4ec870c5739294b56471dbda4dd0793cf75f7bfe8a229dcbb8c691e52d17d8a"
   name = "golang.org/x/sync"
   packages = [
     "errgroup",
     "singleflight",
   ]
   pruneopts = "UT"
-  revision = "1d60e4601c6fd243af51cc01ddf169918a5407ca"
+  revision = "42b317875d0fa942474b76e1b46a6060d720ae6e"
 
 [[projects]]
   branch = "master"
-  digest = "1:105645ed366a17f9ed1007059f0d3506e73e2098f2a1e793ffa92917d6461060"
+  digest = "1:6a875550c3b582f6c2d7e2ce44aba792511f00016d7c46b0a4fb26f730ef3058"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
+  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
 
 [solve-meta]
   analyzer-name = "dep"
