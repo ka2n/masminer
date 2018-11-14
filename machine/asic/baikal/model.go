@@ -8,7 +8,8 @@ import (
 // List of supported MinerType
 const (
 	ModelGP   machine.Model = "Baikal Gaiant+"
-	ModelGX10 machine.Model = "Baikal GX10"     // a.k.a. BK-X
+	ModelGX10 machine.Model = "Baikal GX10" // a.k.a. BK-X
+	ModelG28  machine.Model = "Baikal BK-G28"
 	ModelGB   machine.Model = "Baikal Gaiant-B" // a.k.a. BK-B
 	ModelN    machine.Model = "Baikal N"        // a.k.a. BK-N+
 )
@@ -41,6 +42,8 @@ func modelFromAPIHWV(s string) (machine.Model, error) {
 	switch m {
 	case baikalver.GX10:
 		return ModelGX10, nil
+	case baikalver.G28:
+		return ModelG28, nil
 	case baikalver.GB:
 		return ModelGB, nil
 	case baikalver.GiantP:

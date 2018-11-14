@@ -16,6 +16,7 @@ const (
 	CubeRev2 Model = 0x21
 	GiantP   Model = 0x22
 	GX10     Model = 0x71
+	G28      Model = 0x76
 	GN20     Model = 0x51
 	GN40     Model = 0x52
 	GB       Model = 0x91
@@ -35,6 +36,8 @@ func (i Model) String() string {
 		return "Giant+"
 	case GX10:
 		return "GX10"
+	case G28:
+		return "G28"
 	case GN20:
 		return "GN20"
 	case GN40:
