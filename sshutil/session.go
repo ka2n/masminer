@@ -2,6 +2,7 @@ package sshutil
 
 import (
 	"context"
+	"io"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -11,16 +12,44 @@ type Session struct {
 	*ssh.Session
 }
 
+func (s Session) zombieHack() (io.WriteCloser, error) {
+	// Request ptty to prevent zombie process after disconnection
+	err := s.RequestPty("xterm", 80, 40, ssh.TerminalModes{})
+	if err != nil {
+		return nil, err
+	}
+	return s.StdinPipe()
+}
+
+func (s Session) Output(cmd string) ([]byte, error) {
+	stdin, err := s.zombieHack()
+	if err != nil {
+		return nil, err
+	}
+	defer stdin.Close()
+
+	return s.Session.Output(cmd)
+}
+
+func (s Session) Run(cmd string) error {
+	stdin, err := s.zombieHack()
+	if err != nil {
+		return err
+	}
+	defer stdin.Close()
+
+	return s.Session.Run(cmd)
+}
+
 // OutputContext is call Session.Output with context.Context
 func (s Session) OutputContext(ctx context.Context, cmd string) (output []byte, err error) {
 	if ctx == nil {
 		return s.Output(cmd)
 	}
-
 	rchan := make(chan struct{})
 	go func() {
 		defer close(rchan)
-		output, err = s.Session.Output(cmd)
+		output, err = s.Output(cmd)
 	}()
 
 	select {
@@ -40,7 +69,7 @@ func (s Session) RunContext(ctx context.Context, cmd string) (err error) {
 	rchan := make(chan struct{})
 	go func() {
 		defer close(rchan)
-		err = s.Session.Run(cmd)
+		err = s.Run(cmd)
 	}()
 
 	select {

@@ -21,8 +21,7 @@ func OutputRemoteShell(ctx context.Context, client *ssh.Client, in string) ([]by
 	}
 	defer sess.Close()
 
-	sw := sshutil.Session{Session: sess}
-	return sw.OutputContext(ctx, in)
+	return sess.OutputContext(ctx, in)
 }
 
 func RunRemoteShell(ctx context.Context, client *ssh.Client, in string) error {
@@ -32,8 +31,7 @@ func RunRemoteShell(ctx context.Context, client *ssh.Client, in string) error {
 	}
 	defer sess.Close()
 
-	sw := sshutil.Session{Session: sess}
-	return sw.RunContext(ctx, in)
+	return sess.RunContext(ctx, in)
 }
 
 func OutputMinerRPC(ctx context.Context, d Dialer, command, argument string) ([]byte, error) {
@@ -56,7 +54,7 @@ func OutputMinerRPC(ctx context.Context, d Dialer, command, argument string) ([]
 	return ret, nil
 }
 
-func newSessionContext(ctx context.Context, client *ssh.Client) (*ssh.Session, error) {
+func newSessionContext(ctx context.Context, client *ssh.Client) (*sshutil.Session, error) {
 	var sess *ssh.Session
 	var err error
 
@@ -68,8 +66,11 @@ func newSessionContext(ctx context.Context, client *ssh.Client) (*ssh.Session, e
 
 	select {
 	case <-ctx.Done():
+		if sess != nil {
+			sess.Close()
+		}
 		return nil, ctx.Err()
 	case <-done:
-		return sess, err
+		return &sshutil.Session{Session: sess}, err
 	}
 }
