@@ -102,7 +102,7 @@ func (c *Client) getSystemInfo(ctx context.Context) (info SystemInfo, err error)
 	})
 
 	wg.Go(func() error {
-		ret, err := base.GetFileSystemVersion(ctx, client)
+		ret, err := getFileSystemVersion(ctx, client)
 		if err != nil {
 			return err
 		}
@@ -153,8 +153,9 @@ func getModel(ctx context.Context, client *ssh.Client) (machine.Model, error) {
 
 func getFileSystemVersion(ctx context.Context, client *ssh.Client) (string, error) {
 	cmd := `sed -n 1p ` + metadataPath
-	ret, err := base.OutputRemoteShell(ctx, client, cmd)
-	return string(bytes.TrimSpace(ret)), err
+	ret, _ := base.OutputRemoteShell(ctx, client, cmd)
+	// let ignore error. some model have FileSystemVersion in it's binary, support it someday.
+	return string(bytes.TrimSpace(ret)), nil
 }
 
 func getMinerVersion(ctx context.Context, client *ssh.Client, cmd string) (string, error) {
