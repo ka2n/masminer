@@ -6,11 +6,10 @@ import (
 
 // SystemInfo : Generic system info
 type SystemInfo struct {
-	IPAddr            string
-	MACAddr           string
-	Hostname          string
-	KernelVersion     string
-	FileSystemVersion string
+	IPAddr        string
+	MACAddr       string
+	Hostname      string
+	KernelVersion string
 
 	UptimeSeconds string
 

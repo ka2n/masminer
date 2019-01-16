@@ -98,17 +98,6 @@ func getSystemInfo(ctx context.Context, client *ssh.Client) (info SystemInfo, er
 	})
 
 	wg.Go(func() error {
-		ret, err := base.GetFileSystemVersion(ctx, client)
-		if err != nil {
-			return err
-		}
-		mu.Lock()
-		defer mu.Unlock()
-		info.FileSystemVersion = ret
-		return nil
-	})
-
-	wg.Go(func() error {
 		ret, err := base.GetUptimeSeconds(ctx, client)
 		if err != nil {
 			return err

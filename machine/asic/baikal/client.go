@@ -61,7 +61,7 @@ func (c *Client) RigInfo(ctx context.Context) (machine.RigInfo, error) {
 	info.Model = si.ProductType
 	info.Manufacture = manufactureName
 	info.HardwareVersion = si.ProductVersion
-	info.FirmwareVersion = si.FileSystemVersion
+	info.FirmwareVersion = si.KernelVersion
 	info.MinerVersion = si.MinerVersion
 	info.Algos = Algos(si.ProductType)
 	info.UptimeSeconds = si.UptimeSeconds
